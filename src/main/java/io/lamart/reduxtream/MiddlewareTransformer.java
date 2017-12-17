@@ -9,7 +9,7 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
-final class MiddlewareTransformer<T> implements ObservableTransformer<Object, Object> {
+public final class MiddlewareTransformer<T> implements ObservableTransformer<Object, Object> {
 
     private final Iterable<BiFunction<T, Object, ObservableSource<Object>>> middleware;
     private final Callable<T> getState;

@@ -1,6 +1,5 @@
 package io.lamart.reduxtream;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -30,10 +29,10 @@ final class StoreTransformer<T> implements ObservableTransformer<Object, T> {
 
     public StoreTransformer(
             final T initialState,
-            final List<BiFunction<T, Object, T> > reducers,
+            final BiFunction<T, Object, T> reducer,
             final Iterable<BiFunction<T, Object, ObservableSource<Object>>> middleware) {
         this.state = initialState;
-        this.reducer = Util.wrapReducers(reducers);
+        this.reducer = reducer;
         this.middleware = middleware;
     }
 

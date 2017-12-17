@@ -39,7 +39,7 @@ public final class StoreTransformerBuilder<T> {
     }
 
     public StoreTransformer build() {
-        return new StoreTransformer<T>(initialState, reducers, middleware);
+        return new StoreTransformer<T>(initialState, Util.wrapReducers(reducers), middleware);
     }
 
 }
