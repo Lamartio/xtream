@@ -1,6 +1,5 @@
 package io.lamart.reduxtream;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +9,8 @@ import io.reactivex.functions.Consumer;
 
 public final class StoreTransformerBuilder<T> {
 
-    private final List<BiFunction<T, Object, T>> reducers = new ArrayList<>();
-    private final List<BiFunction<T, Object, ObservableSource<Object>>> middleware = new ArrayList<>();
+    private final List<BiFunction<T, Object, T>> reducers = new ArrayList<BiFunction<T, Object, T>>();
+    private final List<BiFunction<T, Object, ObservableSource<Object>>> middleware = new ArrayList<BiFunction<T, Object, ObservableSource<Object>>>();
     private T initialState;
 
     public StoreTransformerBuilder<T> setInitialState(T initialState) {
@@ -40,7 +39,7 @@ public final class StoreTransformerBuilder<T> {
     }
 
     public StoreTransformer build() {
-        return new StoreTransformer<>(initialState, reducers, middleware);
+        return new StoreTransformer<T>(initialState, reducers, middleware);
     }
 
 }

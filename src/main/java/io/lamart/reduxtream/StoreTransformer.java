@@ -1,6 +1,5 @@
 package io.lamart.reduxtream;
 
-
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -42,7 +41,7 @@ final class StoreTransformer<T> implements ObservableTransformer<Object, T> {
     public ObservableSource<T> apply(Observable<Object> upstream) {
         return upstream
                 .serialize()
-                .compose(new MiddlewareTransformer<>(middleware, getState))
+                .compose(new MiddlewareTransformer<T>(middleware, getState))
                 .scan(state, reducer)
                 .doOnNext(setState)
                 .startWith(state);
