@@ -1,7 +1,4 @@
-import io.lamart.xtream.middleware.Middleware;
-import io.lamart.xtream.middleware.MiddlewareUtil;
 import io.lamart.xtream.reducer.Reducer;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 public final class Mock {
@@ -12,16 +9,6 @@ public final class Mock {
 
         }
     };
-    /**
-     * Appends an exclamation mark to the action
-     */
-
-    public final static Middleware<Integer> EXCLAMATION_MIDDLEWARE = MiddlewareUtil.map(new BiFunction<Integer, Object, Object>() {
-        @Override
-        public Object apply(Integer state, Object action) throws Exception {
-            return action + "!";
-        }
-    });
     /**
      * The reducer supports incrementing, decrementing and doubling an integer.
      */

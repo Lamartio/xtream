@@ -11,7 +11,7 @@ public class MiddlewareParams<T> implements StoreActions<T> {
     private final Consumer<Object> dispatch;
     public final Object action;
 
-    public MiddlewareParams(State<T> state, Consumer<Object> dispatch, Object action) {
+    private MiddlewareParams(State<T> state, Consumer<Object> dispatch, Object action) {
         this.state = state;
         this.dispatch = dispatch;
         this.action = action;
