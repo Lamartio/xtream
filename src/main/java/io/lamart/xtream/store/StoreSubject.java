@@ -1,28 +1,28 @@
 package io.lamart.xtream.store;
 
-import io.lamart.xtream.middleware.MiddlewareParams;
 import io.lamart.xtream.state.AtomicState;
 import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Observer;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 public abstract class StoreSubject<T> extends Store<T> implements ObservableTransformer<Object, T> {
 
-    public final State<T> state;
-    public final Subject<Object> subject;
-    private final Observable<T> observable;
-    protected final StoreTransformers storeTransformers = new StoreTransformers();
+    protected final Subject<Object> subject;
+    protected final Observable<T> observable;
 
     public StoreSubject(T initialValue) {
         this(new AtomicState<T>(initialValue), PublishSubject.create());
     }
 
+    public StoreSubject(T initialValue, Subject<Object> subject) {
+        this(new AtomicState<T>(initialValue), subject);
+    }
+
     public StoreSubject(State<T> state, Subject<Object> subject) {
-        this.state = state;
+        super(state);
         this.subject = subject;
         this.observable = subject.compose(this);
     }
@@ -35,30 +35,6 @@ public abstract class StoreSubject<T> extends Store<T> implements ObservableTran
     @Override
     public void accept(Object action) throws Exception {
         subject.onNext(action);
-    }
-
-    @Override
-    public T call() throws Exception {
-        return state.call();
-    }
-
-    public final class StoreTransformers {
-
-        private StoreTransformers() {
-        }
-
-        public StoreTransformer<T> create(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
-            return StoreTransformer.create(state, StoreSubject.this, middleware);
-        }
-
-        public StoreTransformer<T> create(BiFunction<T, Object, T> reducer) {
-            return StoreTransformer.create(state, reducer);
-        }
-
-        public StoreTransformer<T> create(ObservableTransformer<MiddlewareParams<T>, Object> middleware, BiFunction<T, Object, T> reducer) {
-            return StoreTransformer.create(state, StoreSubject.this, middleware, reducer);
-        }
-
     }
 
 }

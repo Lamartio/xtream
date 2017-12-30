@@ -2,6 +2,7 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.middleware.MiddlewareUtil;
 import io.lamart.xtream.store.Store;
 import io.lamart.xtream.store.StoreSubject;
+import io.lamart.xtream.store.StoreTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.observers.TestObserver;
@@ -20,7 +21,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(storeTransformers.create(Mock.MATH_REDUCER));
+                return observable.compose(StoreTransformer.create(state, Mock.MATH_REDUCER));
             }
 
         };
@@ -42,7 +43,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(storeTransformers.create(middleware));
+                return observable.compose(StoreTransformer.create(state, this, middleware));
             }
 
         };
@@ -64,7 +65,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(storeTransformers.create(middleware, Mock.EXCLAMATION_MATH_REDUCER));
+                return observable.compose(StoreTransformer.create(state, this, middleware, Mock.EXCLAMATION_MATH_REDUCER));
             }
 
         };
