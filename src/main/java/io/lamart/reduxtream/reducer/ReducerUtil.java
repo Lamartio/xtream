@@ -55,10 +55,10 @@ public final class ReducerUtil {
                         return combine(previous, next);
                     }
                 })
-                .blockingGet((Reducer<T>) DEFAULT_INSTANCE);
+                .blockingGet(ReducerUtil.<T>newDefaultInstance());
     }
 
-    public static <T> Reducer<T> combine(final BiFunction<T, Object, T> previous, final BiFunction<T, Object, T> next) throws Exception {
+    public static <T> Reducer<T> combine(final BiFunction<T, Object, T> previous, final BiFunction<T, Object, T> next) {
         return new Reducer<T>() {
             @Override
             public T apply(T state, Object action) throws Exception {
@@ -67,4 +67,12 @@ public final class ReducerUtil {
         };
     }
 
+    public static <T> Reducer<T> newDefaultInstance() {
+        return new Reducer<T>() {
+            @Override
+            public T apply(T state, Object action) throws Exception {
+                return state;
+            }
+        };
+    }
 }

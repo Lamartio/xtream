@@ -17,7 +17,12 @@ public final class StoreTransformerUtil {
         throw new Error();
     }
 
-    public static <T> StoreTransformer<T> compose(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware, final BiFunction<T, Object, T> reducer) {
+    public static <T> StoreTransformer<T> compose(
+            final State<T> state,
+            final Consumer<Object> dispatch,
+            final ObservableTransformer<MiddlewareParams<T>, Object> middleware,
+            final BiFunction<T, Object, T> reducer
+    ) {
         return new StoreTransformer<T>() {
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {
@@ -37,7 +42,11 @@ public final class StoreTransformerUtil {
         };
     }
 
-    public static <T> StoreTransformer<T> compose(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> StoreTransformer<T> compose(
+            final State<T> state,
+            final Consumer<Object> dispatch,
+            final ObservableTransformer<MiddlewareParams<T>, Object> middleware
+    ) {
         return new StoreTransformer<T>() {
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {

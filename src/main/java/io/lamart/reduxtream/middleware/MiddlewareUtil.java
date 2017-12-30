@@ -125,7 +125,7 @@ public final class MiddlewareUtil {
                         return combine(previous, next);
                     }
                 })
-                .blockingGet((Middleware<T>) DEFAULT_INSTANCE);
+                .blockingGet(MiddlewareUtil.<T>newDefaultInstance());
     }
 
 
@@ -147,4 +147,17 @@ public final class MiddlewareUtil {
         };
     }
 
+    public static <T> Middleware<T> newDefaultInstance() {
+        return new Middleware<T>() {
+            @Override
+            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> observable) {
+                return observable.map(new Function<MiddlewareParams<T>, Object>() {
+                    @Override
+                    public Object apply(MiddlewareParams<T> params) throws Exception {
+                        return params.action;
+                    }
+                });
+            }
+        };
+    }
 }

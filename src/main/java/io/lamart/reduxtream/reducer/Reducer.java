@@ -1,7 +1,6 @@
 package io.lamart.reduxtream.reducer;
 
 
-import io.reactivex.ObservableTransformer;
 import io.reactivex.functions.BiFunction;
 
 public interface Reducer<T> extends BiFunction<T, Object, T> {
