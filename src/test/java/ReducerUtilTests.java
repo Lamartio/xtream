@@ -5,10 +5,13 @@ import io.lamart.reduxtream.reducer.ReducerUtil;
 import io.lamart.reduxtream.state.AtomicState;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
-import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ReducerUtilTests {
 
@@ -26,6 +29,20 @@ public class ReducerUtilTests {
     }
 
     @Test
+    public void just() {
+        final List<Integer> list = new ArrayList<>();
+        final Reducer<Integer> reducer = ReducerUtil.just((state, action) -> list.add(state));
+
+        Observable
+                .just(1, 2, 3)
+                .map(integer -> reducer.apply(integer, null))
+                .test()
+                .assertValueSequence(list)
+                .assertNoErrors()
+                .assertComplete();
+    }
+
+    @Test
     public void wrapArray() throws Exception {
         final BiFunction<Integer, Object, Integer> reducer = ReducerUtil.wrap(
                 incrementReducer,
@@ -34,7 +51,7 @@ public class ReducerUtilTests {
         );
         final int result = reducer.apply(1, null);
 
-        Assert.assertEquals(result, 3);
+        assertEquals(result, 3);
     }
 
     @Test
@@ -46,7 +63,7 @@ public class ReducerUtilTests {
         ));
         final int result = reducer.apply(1, null);
 
-        Assert.assertEquals(result, 3);
+        assertEquals(result, 3);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package io.lamart.reduxtream.reducer;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
@@ -17,6 +18,17 @@ public final class ReducerUtil {
 
     private ReducerUtil() {
         throw new Error();
+    }
+
+
+    public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {
+        return new Reducer<T>() {
+            @Override
+            public T apply(T state, Object action) throws Exception {
+                reducer.accept(state, action);
+                return state;
+            }
+        };
     }
 
     public static <T> Reducer<T> wrap(BiFunction<T, Object, T>... reducerArray) {

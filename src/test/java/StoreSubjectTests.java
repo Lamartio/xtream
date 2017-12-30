@@ -13,6 +13,7 @@ import org.junit.Test;
 public class StoreSubjectTests {
     private final Store<Integer> store = new StoreSubject<Integer>(1) {
 
+        private final Middleware<Integer> middleware = MiddlewareUtil.map((state, action) -> action + "!");
         private final Reducer<Integer> reducer = (state, action) -> {
             if ("increment!".equals(action)) {
                 return state + 1;
@@ -24,8 +25,6 @@ public class StoreSubjectTests {
                 return state;
             }
         };
-
-        private final Middleware<Integer> middleware = MiddlewareUtil.map((state, action) -> action + "!");
 
         @Override
         public ObservableSource<Integer> apply(Observable<Object> observable) {
