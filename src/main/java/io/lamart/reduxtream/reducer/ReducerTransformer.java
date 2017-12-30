@@ -11,7 +11,7 @@ public class ReducerTransformer<T> implements ObservableTransformer<ReducerParam
 
     private final BiFunction<T, Object, T> reducer;
 
-    public ReducerTransformer(BiFunction<T, Object, T> reducer) {
+    private ReducerTransformer(BiFunction<T, Object, T> reducer) {
         this.reducer = reducer;
     }
 

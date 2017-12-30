@@ -13,7 +13,7 @@ public class MiddlewareTransformer<T> implements ObservableTransformer<Middlewar
 
     private final ObservableTransformer<MiddlewareParams<T>, Object> middleware;
 
-    public MiddlewareTransformer(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    private MiddlewareTransformer(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         this.middleware = middleware;
     }
 
