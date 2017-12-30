@@ -1,7 +1,7 @@
-import io.lamart.reduxtream.middleware.Middleware;
-import io.lamart.reduxtream.middleware.MiddlewareUtil;
-import io.lamart.reduxtream.store.Store;
-import io.lamart.reduxtream.store.StoreSubject;
+import io.lamart.xtream.middleware.Middleware;
+import io.lamart.xtream.middleware.MiddlewareUtil;
+import io.lamart.xtream.store.Store;
+import io.lamart.xtream.store.StoreSubject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.observers.TestObserver;

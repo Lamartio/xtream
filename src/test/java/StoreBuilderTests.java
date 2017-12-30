@@ -1,7 +1,7 @@
-import io.lamart.reduxtream.state.AtomicState;
-import io.lamart.reduxtream.state.State;
-import io.lamart.reduxtream.store.StoreTransformer;
-import io.lamart.reduxtream.store.StoreTransformerBuilder;
+import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.state.State;
+import io.lamart.xtream.store.StoreTransformer;
+import io.lamart.xtream.store.StoreTransformerBuilder;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.TestObserver;

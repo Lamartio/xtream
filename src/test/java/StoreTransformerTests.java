@@ -1,8 +1,8 @@
-import io.lamart.reduxtream.middleware.Middleware;
-import io.lamart.reduxtream.reducer.Reducer;
-import io.lamart.reduxtream.state.AtomicState;
-import io.lamart.reduxtream.state.State;
-import io.lamart.reduxtream.store.StoreTransformer;
+import io.lamart.xtream.middleware.Middleware;
+import io.lamart.xtream.reducer.Reducer;
+import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.state.State;
+import io.lamart.xtream.store.StoreTransformer;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import org.junit.Assert;

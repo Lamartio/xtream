@@ -1,7 +1,7 @@
-package io.lamart.reduxtream.middleware;
+package io.lamart.xtream.middleware;
 
-import io.lamart.reduxtream.store.StoreActions;
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.state.State;
+import io.lamart.xtream.store.StoreActions;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 

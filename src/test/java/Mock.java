@@ -1,6 +1,6 @@
-import io.lamart.reduxtream.middleware.Middleware;
-import io.lamart.reduxtream.middleware.MiddlewareUtil;
-import io.lamart.reduxtream.reducer.Reducer;
+import io.lamart.xtream.middleware.Middleware;
+import io.lamart.xtream.middleware.MiddlewareUtil;
+import io.lamart.xtream.reducer.Reducer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 

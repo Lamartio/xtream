@@ -1,4 +1,4 @@
-package io.lamart.reduxtream.store;
+package io.lamart.xtream.store;
 
 import io.reactivex.Observable;
 

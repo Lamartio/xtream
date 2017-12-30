@@ -1,9 +1,9 @@
-package io.lamart.reduxtream.store;
+package io.lamart.xtream.store;
 
-import io.lamart.reduxtream.middleware.MiddlewareParams;
-import io.lamart.reduxtream.middleware.MiddlewareTransformer;
-import io.lamart.reduxtream.reducer.ReducerTransformer;
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.middleware.MiddlewareParams;
+import io.lamart.xtream.middleware.MiddlewareTransformer;
+import io.lamart.xtream.reducer.ReducerTransformer;
+import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;

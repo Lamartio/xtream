@@ -1,4 +1,4 @@
-package io.lamart.reduxtream.reducer;
+package io.lamart.xtream.reducer;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.BiConsumer;

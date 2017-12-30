@@ -1,8 +1,8 @@
-package io.lamart.reduxtream.store;
+package io.lamart.xtream.store;
 
-import io.lamart.reduxtream.middleware.MiddlewareParams;
-import io.lamart.reduxtream.state.AtomicState;
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.middleware.MiddlewareParams;
+import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Observer;
@@ -16,10 +16,6 @@ public abstract class StoreSubject<T> extends Store<T> implements ObservableTran
     public final Subject<Object> subject;
     private final Observable<T> observable;
     protected final StoreTransformers storeTransformers = new StoreTransformers();
-
-    public StoreSubject() {
-        this(new AtomicState<T>(), PublishSubject.create());
-    }
 
     public StoreSubject(T initialValue) {
         this(new AtomicState<T>(initialValue), PublishSubject.create());

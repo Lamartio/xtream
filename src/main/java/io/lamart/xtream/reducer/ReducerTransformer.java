@@ -1,6 +1,6 @@
-package io.lamart.reduxtream.reducer;
+package io.lamart.xtream.reducer;
 
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.state.State;
 import io.reactivex.*;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;

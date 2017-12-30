@@ -1,9 +1,9 @@
-package io.lamart.reduxtream.state;
+package io.lamart.xtream.state;
 
-
-import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
+
+import java.util.concurrent.Callable;
 
 public interface State<T> extends Callable<T>, Consumer<T> {
 

@@ -1,4 +1,4 @@
-package io.lamart.reduxtream.middleware;
+package io.lamart.xtream.middleware;
 
 import io.reactivex.ObservableTransformer;
 

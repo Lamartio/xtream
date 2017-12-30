@@ -1,11 +1,11 @@
-package io.lamart.reduxtream.store;
+package io.lamart.xtream.store;
 
-import io.lamart.reduxtream.middleware.Middleware;
-import io.lamart.reduxtream.middleware.MiddlewareParams;
-import io.lamart.reduxtream.middleware.MiddlewareUtil;
-import io.lamart.reduxtream.reducer.Reducer;
-import io.lamart.reduxtream.reducer.ReducerUtil;
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.middleware.Middleware;
+import io.lamart.xtream.middleware.MiddlewareParams;
+import io.lamart.xtream.middleware.MiddlewareUtil;
+import io.lamart.xtream.reducer.Reducer;
+import io.lamart.xtream.reducer.ReducerUtil;
+import io.lamart.xtream.state.State;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;

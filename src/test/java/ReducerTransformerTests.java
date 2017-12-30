@@ -1,8 +1,8 @@
-import io.lamart.reduxtream.reducer.Reducer;
-import io.lamart.reduxtream.reducer.ReducerParams;
-import io.lamart.reduxtream.reducer.ReducerTransformer;
-import io.lamart.reduxtream.state.AtomicState;
-import io.lamart.reduxtream.state.State;
+import io.lamart.xtream.reducer.Reducer;
+import io.lamart.xtream.reducer.ReducerParams;
+import io.lamart.xtream.reducer.ReducerTransformer;
+import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import org.junit.Test;

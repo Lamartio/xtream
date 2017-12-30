@@ -1,12 +1,9 @@
-package io.lamart.reduxtream.state;
+package io.lamart.xtream.state;
 
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AtomicState<T> extends AtomicReference<T> implements State<T> {
-
-    public AtomicState() {
-    }
 
     public AtomicState(T initialValue) {
         super(initialValue);
