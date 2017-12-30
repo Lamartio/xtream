@@ -59,6 +59,16 @@ public class MiddlewareUtilTests {
     }
 
     @Test
+    public void flatMap() {
+        final Middleware<Object> middleware = MiddlewareUtil.flatMap((state, action) -> Arrays.asList(action, action));
+
+        newActionsObservable(1, 2, 3)
+                .compose(middleware)
+                .test()
+                .assertValues(1, 1, 2, 2, 3, 3);
+    }
+
+    @Test
     public void combine() {
         final Middleware<Object> middleware1 = MiddlewareUtil.map((Store, action) -> ((Integer) action) * 2);
         final Middleware<Object> middleware2 = MiddlewareUtil.map((Store, action) -> action.toString());
@@ -96,7 +106,6 @@ public class MiddlewareUtilTests {
                 .map(MiddlewareParams.map(new MockState(), null));
     }
 
-
     private final class MockState implements State<Object> {
 
         private final Object state = new Object();
@@ -111,4 +120,5 @@ public class MiddlewareUtilTests {
             return state;
         }
     }
+
 }

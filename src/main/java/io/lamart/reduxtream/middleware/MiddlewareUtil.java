@@ -8,18 +8,6 @@ import java.util.concurrent.Callable;
 
 public final class MiddlewareUtil {
 
-    private static final Middleware<?> DEFAULT_INSTANCE = new Middleware<Object>() {
-        @Override
-        public ObservableSource<Object> apply(Observable<MiddlewareParams<Object>> observable) {
-            return observable.map(new Function<MiddlewareParams<Object>, Object>() {
-                @Override
-                public Object apply(MiddlewareParams<Object> params) throws Exception {
-                    return params.action;
-                }
-            });
-        }
-    };
-
     private MiddlewareUtil() {
         throw new Error();
     }
@@ -72,6 +60,20 @@ public final class MiddlewareUtil {
                 return upstream.map(new Function<MiddlewareParams<T>, Object>() {
                     @Override
                     public Object apply(MiddlewareParams<T> params) throws Exception {
+                        return middleware.apply(params.call(), params.action);
+                    }
+                });
+            }
+        };
+    }
+
+    public static <T> Middleware<T> flatMap(final BiFunction<T, Object, Iterable<Object>> middleware) {
+        return new Middleware<T>() {
+            @Override
+            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
+                return upstream.flatMapIterable(new Function<MiddlewareParams<T>, Iterable<?>>() {
+                    @Override
+                    public Iterable<?> apply(MiddlewareParams<T> params) throws Exception {
                         return middleware.apply(params.call(), params.action);
                     }
                 });

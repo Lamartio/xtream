@@ -15,19 +15,19 @@ public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult
     private Reducer<T> reducer = ReducerUtil.newDefaultInstance();
     private Middleware<T> middleware = MiddlewareUtil.newDefaultInstance();
 
-    public StoreTransformerBuilder<T> add(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public StoreTransformerBuilder<T> addMiddleware(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         this.middleware = MiddlewareUtil.combine(this.middleware, middleware);
         return this;
     }
 
-    public StoreTransformerBuilder<T> add(BiFunction<T, Object, T> reducer) {
+    public StoreTransformerBuilder<T> addReducer(BiFunction<T, Object, T> reducer) {
         this.reducer = ReducerUtil.combine(this.reducer, reducer);
         return this;
     }
 
     public StoreTransformerBuilder<T> add(StoreTransformerBuilderResult<T> result) {
-        add(result.getMiddleware());
-        add(result.getReducer());
+        addMiddleware(result.getMiddleware());
+        addReducer(result.getReducer());
         return this;
     }
 
@@ -42,7 +42,7 @@ public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult
     }
 
     public StoreTransformer<T> build(State<T> state, Consumer<Object> dispatch) {
-        return StoreTransformer.create(state, dispatch, middleware, reducer);
+        return StoreTransformer.create(state, dispatch, getMiddleware(), getReducer());
     }
 
 }

@@ -9,7 +9,7 @@ import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
-public class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> {
+public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> {
 
     private final ObservableTransformer<MiddlewareParams<T>, Object> middleware;
 

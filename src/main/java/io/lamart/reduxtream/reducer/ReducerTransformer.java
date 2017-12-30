@@ -7,7 +7,7 @@ import io.reactivex.functions.Function;
 
 import java.util.concurrent.Callable;
 
-public class ReducerTransformer<T> implements ObservableTransformer<ReducerParams<T>, T> {
+public final class ReducerTransformer<T> implements ObservableTransformer<ReducerParams<T>, T> {
 
     private final BiFunction<T, Object, T> reducer;
 
