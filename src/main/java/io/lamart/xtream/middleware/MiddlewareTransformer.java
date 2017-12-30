@@ -17,11 +17,11 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
         this.middleware = middleware;
     }
 
-    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> create(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> from(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         return new MiddlewareTransformer<T>(middleware);
     }
 
-    public static <T> ObservableTransformer<Object, ReducerParams<T>> create(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> ObservableTransformer<Object, ReducerParams<T>> from(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         return new ObservableTransformer<Object, ReducerParams<T>>() {
             @Override
             public ObservableSource<ReducerParams<T>> apply(Observable<Object> observable) {

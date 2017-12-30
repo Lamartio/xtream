@@ -15,11 +15,11 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
         this.reducer = reducer;
     }
 
-    public static <T> ObservableTransformer<ReducerParams<T>, T> create(BiFunction<T, Object, T> reducer) {
+    public static <T> ReducerTransformer from(BiFunction<T, Object, T> reducer) {
         return new ReducerTransformer<T>(reducer);
     }
 
-    public static <T> ObservableTransformer<Object, T> create(final State<T> state, final BiFunction<T, Object, T> reducer) {
+    public static <T> ObservableTransformer<Object, T> from(final State<T> state, final BiFunction<T, Object, T> reducer) {
         return new ObservableTransformer<Object, T>() {
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {

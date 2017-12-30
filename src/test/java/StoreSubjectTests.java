@@ -21,7 +21,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.create(state, Mock.MATH_REDUCER));
+                return observable.compose(StoreTransformer.fromReducer(state, Mock.MATH_REDUCER));
             }
 
         };
@@ -43,7 +43,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.create(state, this, middleware));
+                return observable.compose(StoreTransformer.fromMiddleware(state, this, middleware));
             }
 
         };
@@ -65,7 +65,7 @@ public class StoreSubjectTests {
 
             @Override
             public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.create(state, this, middleware, Mock.EXCLAMATION_MATH_REDUCER));
+                return observable.compose(StoreTransformer.from(state, this, middleware, Mock.EXCLAMATION_MATH_REDUCER));
             }
 
         };

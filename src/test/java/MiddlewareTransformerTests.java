@@ -17,7 +17,7 @@ public class MiddlewareTransformerTests {
     public void withMiddlewareParams() {
         final State<Integer> state = new AtomicState<>(0);
         final ObservableTransformer<MiddlewareParams<Integer>, ReducerParams<Integer>> transformer
-                = MiddlewareTransformer.create(exclamationMiddleware);
+                = MiddlewareTransformer.from(exclamationMiddleware);
 
         Observable
                 .just("a", "b", "c")
@@ -32,7 +32,7 @@ public class MiddlewareTransformerTests {
     @Test
     public void withoutMiddlewareParams() {
         final State<Integer> state = new AtomicState<>(0);
-        final ObservableTransformer<Object, ReducerParams<Integer>> transformer = MiddlewareTransformer.create(
+        final ObservableTransformer<Object, ReducerParams<Integer>> transformer = MiddlewareTransformer.from(
                 state,
                 Mock.DISPATCH,
                 exclamationMiddleware

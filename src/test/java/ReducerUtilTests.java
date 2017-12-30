@@ -70,7 +70,7 @@ public class ReducerUtilTests {
     public void compose() {
         Observable
                 .just("increment")
-                .compose(ReducerTransformer.create(new AtomicState<>(0), incrementReducer))
+                .compose(ReducerTransformer.from(new AtomicState<>(0), incrementReducer))
                 .test()
                 .assertValue(1)
                 .assertNoErrors()
@@ -82,7 +82,7 @@ public class ReducerUtilTests {
         Observable
                 .just("increment")
                 .map(ReducerParams.map(new AtomicState<>(0)))
-                .compose(ReducerTransformer.create(incrementReducer))
+                .compose(ReducerTransformer.from(incrementReducer))
                 .test()
                 .assertValue(1)
                 .assertNoErrors()

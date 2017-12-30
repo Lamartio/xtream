@@ -10,7 +10,7 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
-public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult<T> {
+public class StoreTransformerBuilder<T> implements StoreSource<T> {
 
     private Reducer<T> reducer = ReducerUtil.newDefaultInstance();
     private Middleware<T> middleware = MiddlewareUtil.newDefaultInstance();
@@ -25,7 +25,7 @@ public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult
         return this;
     }
 
-    public StoreTransformerBuilder<T> add(StoreTransformerBuilderResult<T> result) {
+    public StoreTransformerBuilder<T> add(StoreSource<T> result) {
         addMiddleware(result.getMiddleware());
         addReducer(result.getReducer());
         return this;
@@ -42,7 +42,7 @@ public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult
     }
 
     public StoreTransformer<T> build(State<T> state, Consumer<Object> dispatch) {
-        return StoreTransformer.create(state, dispatch, getMiddleware(), getReducer());
+        return StoreTransformer.fromSource(state, dispatch, this);
     }
 
 }

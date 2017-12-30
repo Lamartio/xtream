@@ -20,7 +20,7 @@ public class StoreTransformerTests {
     @Test
     public void reducer() {
         final State<Integer> state = new AtomicState<>(0);
-        final StoreTransformer<Integer> transformer = StoreTransformer.create(state, incrementReducer);
+        final StoreTransformer<Integer> transformer = StoreTransformer.fromReducer(state, incrementReducer);
 
         assertReducer(transformer, 1, 2, 3);
     }
@@ -35,7 +35,7 @@ public class StoreTransformerTests {
             actions.add(action);
             return action;
         });
-        final StoreTransformer<Integer> transformer = StoreTransformer.create(state, mockDispatch, middleware);
+        final StoreTransformer<Integer> transformer = StoreTransformer.fromMiddleware(state, mockDispatch, middleware);
 
         assertReducer(transformer, 0, 0, 0);
         assertMiddleware(actions);
@@ -51,7 +51,7 @@ public class StoreTransformerTests {
             actions.add(action);
             return action;
         });
-        final StoreTransformer<Integer> transformer = StoreTransformer.create(state, mockDispatch, middleware, incrementReducer);
+        final StoreTransformer<Integer> transformer = StoreTransformer.from(state, mockDispatch, middleware, incrementReducer);
 
         assertReducer(transformer, 1, 2, 3);
         assertMiddleware(actions);

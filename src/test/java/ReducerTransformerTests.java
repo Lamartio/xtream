@@ -15,7 +15,7 @@ public class ReducerTransformerTests {
     public void withReducerParams() {
         final State<Integer> state = new AtomicState<>(0);
         final ObservableTransformer<ReducerParams<Integer>, Integer> transformer
-                = ReducerTransformer.create(incrementReducer);
+                = ReducerTransformer.from(incrementReducer);
 
         Observable
                 .just("a", "b", "c")
@@ -31,7 +31,7 @@ public class ReducerTransformerTests {
     public void withoutReducerParams() {
         final State<Integer> state = new AtomicState<>(0);
         final ObservableTransformer<Object, Integer> transformer
-                = ReducerTransformer.create(state, incrementReducer);
+                = ReducerTransformer.from(state, incrementReducer);
 
         Observable
                 .just("a", "b", "c")

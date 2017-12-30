@@ -16,7 +16,7 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
     private StoreTransformer() {
     }
 
-    public static <T> StoreTransformer<T> create(
+    public static <T> StoreTransformer<T> from(
             final State<T> state,
             final Consumer<Object> dispatch,
             final ObservableTransformer<MiddlewareParams<T>, Object> middleware,
@@ -26,22 +26,30 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {
                 return observable
-                        .compose(MiddlewareTransformer.create(state, dispatch, middleware))
-                        .compose(ReducerTransformer.create(reducer));
+                        .compose(MiddlewareTransformer.from(state, dispatch, middleware))
+                        .compose(ReducerTransformer.from(reducer));
             }
         };
     }
 
-    public static <T> StoreTransformer<T> create(final State<T> state, final BiFunction<T, Object, T> reducer) {
+    public static <T> StoreTransformer<T> fromReducer(final State<T> state, final BiFunction<T, Object, T> reducer) {
         return new StoreTransformer<T>() {
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {
-                return observable.compose(ReducerTransformer.create(state, reducer));
+                return observable.compose(ReducerTransformer.from(state, reducer));
             }
         };
     }
 
-    public static <T> StoreTransformer<T> create(
+    public static <T> StoreTransformer<T> fromSource(
+            final State<T> state,
+            final Consumer<Object> dispatch,
+            final StoreSource<T> source
+    ) {
+        return from(state, dispatch, source.getMiddleware(), source.getReducer());
+    }
+
+    public static <T> StoreTransformer<T> fromMiddleware(
             final State<T> state,
             final Consumer<Object> dispatch,
             final ObservableTransformer<MiddlewareParams<T>, Object> middleware
@@ -50,7 +58,7 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {
                 return observable
-                        .compose(MiddlewareTransformer.create(state, dispatch, middleware))
+                        .compose(MiddlewareTransformer.from(state, dispatch, middleware))
                         .map(new Function<Object, T>() {
                             @Override
                             public T apply(Object action) throws Exception {
