@@ -1,6 +1,6 @@
 import io.lamart.reduxtream.reducer.Reducer;
 import io.lamart.reduxtream.reducer.ReducerParams;
-import io.lamart.reduxtream.reducer.ReducerTransformerUtil;
+import io.lamart.reduxtream.reducer.ReducerTransformer;
 import io.lamart.reduxtream.reducer.ReducerUtil;
 import io.lamart.reduxtream.state.AtomicState;
 import io.reactivex.Observable;
@@ -70,7 +70,7 @@ public class ReducerUtilTests {
     public void compose() {
         Observable
                 .just("increment")
-                .compose(ReducerTransformerUtil.compose(new AtomicState<>(0), incrementReducer))
+                .compose(ReducerTransformer.create(new AtomicState<>(0), incrementReducer))
                 .test()
                 .assertValue(1)
                 .assertNoErrors()
@@ -82,7 +82,7 @@ public class ReducerUtilTests {
         Observable
                 .just("increment")
                 .map(ReducerParams.map(new AtomicState<>(0)))
-                .compose(ReducerTransformerUtil.compose(incrementReducer))
+                .compose(ReducerTransformer.create(incrementReducer))
                 .test()
                 .assertValue(1)
                 .assertNoErrors()

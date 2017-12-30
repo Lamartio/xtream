@@ -1,10 +1,12 @@
 package io.lamart.reduxtream.middleware;
 
 import io.lamart.reduxtream.reducer.ReducerParams;
+import io.lamart.reduxtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> {
@@ -13,6 +15,21 @@ public class MiddlewareTransformer<T> implements ObservableTransformer<Middlewar
 
     public MiddlewareTransformer(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         this.middleware = middleware;
+    }
+
+    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> create(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+        return new MiddlewareTransformer<T>(middleware);
+    }
+
+    public static <T> ObservableTransformer<Object, ReducerParams<T>> create(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+        return new ObservableTransformer<Object, ReducerParams<T>>() {
+            @Override
+            public ObservableSource<ReducerParams<T>> apply(Observable<Object> observable) {
+                return observable
+                        .map(MiddlewareParams.map(state, dispatch))
+                        .compose(new MiddlewareTransformer<T>(middleware));
+            }
+        };
     }
 
     @Override

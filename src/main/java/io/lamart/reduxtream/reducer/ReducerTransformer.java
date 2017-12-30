@@ -1,5 +1,6 @@
 package io.lamart.reduxtream.reducer;
 
+import io.lamart.reduxtream.state.State;
 import io.reactivex.*;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
@@ -12,6 +13,21 @@ public class ReducerTransformer<T> implements ObservableTransformer<ReducerParam
 
     public ReducerTransformer(BiFunction<T, Object, T> reducer) {
         this.reducer = reducer;
+    }
+
+    public static <T> ObservableTransformer<ReducerParams<T>, T> create(BiFunction<T, Object, T> reducer) {
+        return new ReducerTransformer<T>(reducer);
+    }
+
+    public static <T> ObservableTransformer<Object, T> create(final State<T> state, final BiFunction<T, Object, T> reducer) {
+        return new ObservableTransformer<Object, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<Object> observable) {
+                return observable
+                        .map(ReducerParams.map(state))
+                        .compose(new ReducerTransformer<T>(reducer));
+            }
+        };
     }
 
     @Override

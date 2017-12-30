@@ -42,7 +42,7 @@ public class StoreTransformerBuilder<T> implements StoreTransformerBuilderResult
     }
 
     public StoreTransformer<T> build(State<T> state, Consumer<Object> dispatch) {
-        return StoreTransformerUtil.compose(state, dispatch, middleware, reducer);
+        return StoreTransformer.create(state, dispatch, middleware, reducer);
     }
 
 }

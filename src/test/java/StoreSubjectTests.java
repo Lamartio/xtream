@@ -3,7 +3,7 @@ import io.lamart.reduxtream.middleware.MiddlewareUtil;
 import io.lamart.reduxtream.reducer.Reducer;
 import io.lamart.reduxtream.store.Store;
 import io.lamart.reduxtream.store.StoreSubject;
-import io.lamart.reduxtream.store.StoreTransformerUtil;
+import io.lamart.reduxtream.store.StoreTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.observers.TestObserver;
@@ -28,7 +28,7 @@ public class StoreSubjectTests {
 
         @Override
         public ObservableSource<Integer> apply(Observable<Object> observable) {
-            return observable.compose(StoreTransformerUtil.compose(state, this, middleware, reducer));
+            return observable.compose(StoreTransformer.create(state, this, middleware, reducer));
         }
 
     };
