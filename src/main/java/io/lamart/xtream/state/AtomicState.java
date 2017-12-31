@@ -5,8 +5,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class AtomicState<T> extends AtomicReference<T> implements State<T> {
 
-    public AtomicState(T initialValue) {
-        super(initialValue);
+    public AtomicState(T initialState) {
+        super(initialState);
     }
 
     @Override
