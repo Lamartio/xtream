@@ -9,17 +9,9 @@ import java.util.Arrays;
 
 public final class ReducerUtil {
 
-    private final static Reducer<?> DEFAULT_INSTANCE = new Reducer<Object>() {
-        @Override
-        public Object apply(Object state, Object action) throws Exception {
-            return state;
-        }
-    };
-
     private ReducerUtil() {
         throw new Error();
     }
-
 
     public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {
         return new Reducer<T>() {
