@@ -5,7 +5,6 @@ import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
@@ -17,7 +16,7 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
         this.middleware = middleware;
     }
 
-    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerParams<T>> from(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> MiddlewareTransformer<T> from(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         return new MiddlewareTransformer<T>(middleware);
     }
 
@@ -34,14 +33,13 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
 
     @Override
     public ObservableSource<ReducerParams<T>> apply(Observable<MiddlewareParams<T>> observable) {
-        return observable.flatMapSingle(new Function<MiddlewareParams<T>, SingleSource<? extends ReducerParams<T>>>() {
+        return observable.flatMap(new Function<MiddlewareParams<T>, ObservableSource<ReducerParams<T>>>() {
             @Override
-            public SingleSource<? extends ReducerParams<T>> apply(MiddlewareParams<T> params) throws Exception {
+            public ObservableSource<ReducerParams<T>> apply(MiddlewareParams<T> params) throws Exception {
                 return Observable
                         .just(params)
                         .compose(middleware)
-                        .map(ReducerParams.map(params.state))
-                        .firstOrError();
+                        .map(ReducerParams.map(params.state));
             }
         });
     }

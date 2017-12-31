@@ -15,7 +15,7 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
         this.reducer = reducer;
     }
 
-    public static <T> ReducerTransformer from(BiFunction<T, Object, T> reducer) {
+    public static <T> ReducerTransformer<T> from(BiFunction<T, Object, T> reducer) {
         return new ReducerTransformer<T>(reducer);
     }
 

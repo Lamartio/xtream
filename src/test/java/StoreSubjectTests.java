@@ -2,9 +2,6 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.middleware.MiddlewareUtil;
 import io.lamart.xtream.store.Store;
 import io.lamart.xtream.store.StoreSubject;
-import io.lamart.xtream.store.StoreTransformer;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.observers.TestObserver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,14 +14,7 @@ public class StoreSubjectTests {
 
     @Test
     public void reducerOnly() {
-        final Store<Integer> store = new StoreSubject<Integer>(1) {
-
-            @Override
-            public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.fromReducer(state, Mock.MATH_REDUCER));
-            }
-
-        };
+        final Store<Integer> store = StoreSubject.fromReducer(1, Mock.MATH_REDUCER);
         final TestObserver<Integer> observer = store.test();
 
         store.dispatch("increment");
@@ -39,14 +29,7 @@ public class StoreSubjectTests {
     public void middlewareOnly() {
         final List<String> actions = new ArrayList<>();
         final Middleware<Integer> middleware = newExclamationMiddleware(actions);
-        final Store<Integer> store = new StoreSubject<Integer>(0) {
-
-            @Override
-            public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.fromMiddleware(state, this, middleware));
-            }
-
-        };
+        final Store<Integer> store = StoreSubject.fromMiddleware(0, middleware);
         final TestObserver<Integer> observer = store.test();
 
         store.dispatch("increment");
@@ -61,14 +44,7 @@ public class StoreSubjectTests {
     public void both() {
         final List<String> actions = new ArrayList<>();
         final Middleware<Integer> middleware = newExclamationMiddleware(actions);
-        final Store<Integer> store = new StoreSubject<Integer>(1) {
-
-            @Override
-            public ObservableSource<Integer> apply(Observable<Object> observable) {
-                return observable.compose(StoreTransformer.from(state, this, middleware, Mock.EXCLAMATION_MATH_REDUCER));
-            }
-
-        };
+        final Store<Integer> store = StoreSubject.from(1, middleware, Mock.EXCLAMATION_MATH_REDUCER);
         final TestObserver<Integer> observer = store.test();
 
         store.dispatch("increment");

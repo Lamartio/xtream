@@ -50,7 +50,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 ### Gradle template
-.gradle
+.gradle/
 /build/
 
 # Ignore Gradle GUI config
