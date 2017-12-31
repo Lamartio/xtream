@@ -3,6 +3,7 @@ import io.lamart.xtream.reducer.ReducerParams;
 import io.lamart.xtream.reducer.ReducerTransformer;
 import io.lamart.xtream.reducer.ReducerUtil;
 import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import org.junit.Test;
@@ -26,6 +27,22 @@ public class ReducerUtilTests {
                 .map(integer -> incrementReducer.apply(integer, null))
                 .test()
                 .assertValues(2, 3, 4);
+    }
+
+
+    @Test
+    public void filter() {
+        final Reducer<Integer> reducer = ReducerUtil.filter(String.class, incrementReducer);
+        final State<Integer> state = new AtomicState<>(0);
+
+        Observable
+                .just("increment", 0, "increment")
+                .map(ReducerParams.map(state))
+                .compose(ReducerTransformer.from(reducer))
+                .test()
+                .assertValues(1, 1, 2)
+                .assertNoErrors()
+                .assertComplete();
     }
 
     @Test

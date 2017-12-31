@@ -16,6 +16,14 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
     private StoreTransformer() {
     }
 
+    public static <T> StoreTransformer<T> fromSource(
+            final State<T> state,
+            final Consumer<Object> dispatch,
+            final StoreSource<T> source
+    ) {
+        return from(state, dispatch, source.getMiddleware(), source.getReducer());
+    }
+
     public static <T> StoreTransformer<T> from(
             final State<T> state,
             final Consumer<Object> dispatch,
@@ -39,14 +47,6 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
                 return observable.compose(ReducerTransformer.from(state, reducer));
             }
         };
-    }
-
-    public static <T> StoreTransformer<T> fromSource(
-            final State<T> state,
-            final Consumer<Object> dispatch,
-            final StoreSource<T> source
-    ) {
-        return from(state, dispatch, source.getMiddleware(), source.getReducer());
     }
 
     public static <T> StoreTransformer<T> fromMiddleware(

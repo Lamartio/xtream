@@ -4,6 +4,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import java.util.Arrays;
 
@@ -11,6 +12,27 @@ public final class ReducerUtil {
 
     private ReducerUtil() {
         throw new Error();
+    }
+
+    public static <T> Reducer<T> filter(final Class actionType, final BiFunction<T, Object, T> reducer) {
+        return filter(
+                new Predicate<Object>() {
+                    @Override
+                    public boolean test(Object action) throws Exception {
+                        return action.getClass().equals(actionType);
+                    }
+                }
+                , reducer
+        );
+    }
+
+    public static <T> Reducer<T> filter(final Predicate<Object> actionFilter, final BiFunction<T, Object, T> reducer) {
+        return new Reducer<T>() {
+            @Override
+            public T apply(T state, Object action) throws Exception {
+                return actionFilter.test(action) ? reducer.apply(state, action) : state;
+            }
+        };
     }
 
     public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {
