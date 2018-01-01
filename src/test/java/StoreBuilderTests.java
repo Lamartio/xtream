@@ -1,4 +1,4 @@
-import io.lamart.xtream.Util;
+import io.lamart.xtream.DispatchUtil;
 import io.lamart.xtream.state.AtomicState;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.store.StoreTransformer;
@@ -17,7 +17,7 @@ public class StoreBuilderTests {
         final State<Integer> state = new AtomicState<>(0);
         final StoreTransformerBuilder<Integer> builder = new StoreTransformerBuilder<>();
         final Subject<Object> subject = PublishSubject.create();
-        final StoreTransformer<Integer> transformer = builder.build(state, Util.newDispatch(subject));
+        final StoreTransformer<Integer> transformer = builder.build(state, DispatchUtil.from(subject));
         final Observable<Integer> observable = subject.compose(transformer);
         final TestObserver<Integer> test = observable.test();
 
