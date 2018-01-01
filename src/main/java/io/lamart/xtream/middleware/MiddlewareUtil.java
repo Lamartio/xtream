@@ -1,5 +1,6 @@
 package io.lamart.xtream.middleware;
 
+import io.lamart.xtream.store.StoreActions;
 import io.reactivex.*;
 import io.reactivex.functions.*;
 
@@ -12,7 +13,7 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
-    public static <T> Middleware<T> none(final BiConsumer<T, Object> middleware) {
+    public static <T> Middleware<T> none(final BiConsumer<StoreActions<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -23,7 +24,7 @@ public final class MiddlewareUtil {
                                 return Completable.fromAction(new Action() {
                                     @Override
                                     public void run() throws Exception {
-                                        middleware.accept(params.call(), params.action);
+                                        middleware.accept(params, params.action);
                                     }
                                 });
                             }
@@ -33,7 +34,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> maybe(final BiFunction<T, Object, Object> middleware) {
+    public static <T> Middleware<T> maybe(final BiFunction<StoreActions<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -44,7 +45,7 @@ public final class MiddlewareUtil {
                         return Maybe.fromCallable(new Callable<Object>() {
                             @Override
                             public Object call() throws Exception {
-                                return middleware.apply(params.call(), params.action);
+                                return middleware.apply(params, params.action);
                             }
                         });
                     }
@@ -53,35 +54,35 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> map(final BiFunction<T, Object, Object> middleware) {
+    public static <T> Middleware<T> map(final BiFunction<StoreActions<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
                 return upstream.map(new Function<MiddlewareParams<T>, Object>() {
                     @Override
                     public Object apply(MiddlewareParams<T> params) throws Exception {
-                        return middleware.apply(params.call(), params.action);
+                        return middleware.apply(params, params.action);
                     }
                 });
             }
         };
     }
 
-    public static <T> Middleware<T> flatMap(final BiFunction<T, Object, Iterable<Object>> middleware) {
+    public static <T> Middleware<T> flatMap(final BiFunction<StoreActions<T>, Object, Iterable<Object>> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
                 return upstream.flatMapIterable(new Function<MiddlewareParams<T>, Iterable<?>>() {
                     @Override
                     public Iterable<?> apply(MiddlewareParams<T> params) throws Exception {
-                        return middleware.apply(params.call(), params.action);
+                        return middleware.apply(params, params.action);
                     }
                 });
             }
         };
     }
 
-    public static <T> Middleware<T> just(final BiConsumer<T, Object> middleware) {
+    public static <T> Middleware<T> just(final BiConsumer<StoreActions<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -90,7 +91,7 @@ public final class MiddlewareUtil {
 
                             @Override
                             public void accept(MiddlewareParams<T> params) throws Exception {
-                                middleware.accept(params.call(), params.action);
+                                middleware.accept(params, params.action);
                             }
                         })
                         .map(new Function<MiddlewareParams<T>, Object>() {

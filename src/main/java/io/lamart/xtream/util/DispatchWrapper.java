@@ -1,4 +1,4 @@
-package io.lamart.xtream;
+package io.lamart.xtream.util;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.Observer;

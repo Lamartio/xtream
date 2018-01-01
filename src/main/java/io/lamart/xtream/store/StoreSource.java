@@ -11,7 +11,6 @@ public interface StoreSource<T> {
 
     Reducer<T> getReducer();
 
-
     class Instance<T> implements StoreSource<T> {
 
         private final Middleware<T> middleware;

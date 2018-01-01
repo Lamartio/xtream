@@ -1,8 +1,6 @@
-package io.lamart.xtream.store.implementation;
+package io.lamart.xtream.store;
 
 import io.lamart.xtream.state.State;
-import io.lamart.xtream.store.Store;
-import io.lamart.xtream.store.StoreInitializer;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.functions.Consumer;
@@ -10,13 +8,13 @@ import io.reactivex.observables.ConnectableObservable;
 
 import java.util.concurrent.Callable;
 
-abstract class Instance<T> extends Store<T> {
+abstract class StoreImp<T> extends Store<T> {
 
     protected final Callable<T> getState;
     protected final Consumer<Object> dispatch;
     protected final Observable<T> observable;
 
-    protected Instance(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
+    protected StoreImp(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
         this.getState = getState;
         this.dispatch = dispatch;
         this.observable = observable;

@@ -32,8 +32,13 @@ public final class StoreInitializerUtil {
         };
     }
 
-    public static <T> StoreInitializer<T> fromSource(StoreSource<T> source) {
-        return from(source.getMiddleware(), source.getReducer());
+    public static <T> StoreInitializer<T> fromSource(final StoreSource<T> source) {
+        return new StoreInitializer<T>() {
+            @Override
+            public ConnectableObservable<T> apply(State<T> state, Consumer<Object> dispatch, Observable<Object> observable) throws Exception {
+                return observable.compose(StoreTransformer.fromSource(state, dispatch, source)).publish();
+            }
+        };
     }
 
     public static <T> StoreInitializer<T> from(final ObservableTransformer<MiddlewareParams<T>, Object> middleware, final BiFunction<T, Object, T> reducer) {
