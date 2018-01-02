@@ -46,7 +46,7 @@ public final class StoreSubject<T> extends StoreImp<T> {
 
     public static <T> StoreSubject<T> from(State<T> state, Subject<Object> subject, StoreInitializer<T> initializer) {
         final Consumer<Object> dispatch = DispatchUtil.from(subject);
-        final Observable<T> observable = apply(initializer, state, dispatch, subject);
+        final Observable<T> observable = apply(initializer, state, subject);
 
         return new StoreSubject<T>(state, dispatch, observable);
     }

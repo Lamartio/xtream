@@ -41,7 +41,6 @@ public final class StoreObservable<T> extends StoreImp<T> {
         final Observable<T> observable = apply(
                 initializer,
                 state,
-                dispatch,
                 Observable.create(new ObservableOnSubscribe<Object>() {
                     @Override
                     public void subscribe(ObservableEmitter<Object> e) throws Exception {

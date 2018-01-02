@@ -1,6 +1,5 @@
 package io.lamart.xtream.middleware;
 
-import io.lamart.xtream.store.StoreActions;
 import io.reactivex.*;
 import io.reactivex.functions.*;
 
@@ -13,7 +12,7 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
-    public static <T> Middleware<T> none(final BiConsumer<StoreActions<T>, Object> middleware) {
+    public static <T> Middleware<T> none(final BiConsumer<MiddlewareParams<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -34,7 +33,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> maybe(final BiFunction<StoreActions<T>, Object, Object> middleware) {
+    public static <T> Middleware<T> maybe(final BiFunction<MiddlewareParams<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -54,7 +53,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> map(final BiFunction<StoreActions<T>, Object, Object> middleware) {
+    public static <T> Middleware<T> map(final BiFunction<MiddlewareParams<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -68,7 +67,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> flatMap(final BiFunction<StoreActions<T>, Object, Iterable<Object>> middleware) {
+    public static <T> Middleware<T> flatMap(final BiFunction<MiddlewareParams<T>, Object, Iterable<Object>> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -82,7 +81,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> just(final BiConsumer<StoreActions<T>, Object> middleware) {
+    public static <T> Middleware<T> just(final BiConsumer<MiddlewareParams<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {

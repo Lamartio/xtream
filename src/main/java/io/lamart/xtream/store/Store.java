@@ -1,10 +1,12 @@
 package io.lamart.xtream.store;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
-public abstract class Store<T> extends Observable<T> implements StoreActions<T> {
+import java.util.concurrent.Callable;
 
-    @Override
+public abstract class Store<T> extends Observable<T> implements Callable<T>, Consumer<Object> {
+
     public abstract void accept(Object action) throws Exception;
 
     public T getState() {

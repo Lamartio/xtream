@@ -10,25 +10,14 @@ import java.util.concurrent.Callable;
 
 abstract class StoreImp<T> extends Store<T> {
 
-    protected final Callable<T> getState;
-    protected final Consumer<Object> dispatch;
-    protected final Observable<T> observable;
+    private final Callable<T> getState;
+    private final Consumer<Object> dispatch;
+    private final Observable<T> observable;
 
-    protected StoreImp(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
+    StoreImp(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
         this.getState = getState;
         this.dispatch = dispatch;
         this.observable = observable;
-    }
-
-    protected static <T> Observable<T> apply(StoreInitializer<T> initializer, State<T> state, Consumer<Object> dispatch, Observable<Object> source) {
-        try {
-            final ConnectableObservable<T> observable = initializer.apply(source, state, dispatch);
-
-            observable.connect();
-            return observable;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -44,6 +33,17 @@ abstract class StoreImp<T> extends Store<T> {
     @Override
     public T call() throws Exception {
         return getState.call();
+    }
+
+    protected static <T> Observable<T> apply(StoreInitializer<T> initializer, State<T> state, Observable<Object> source) {
+        try {
+            final ConnectableObservable<T> observable = initializer.apply(source, state);
+
+            observable.connect();
+            return observable;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

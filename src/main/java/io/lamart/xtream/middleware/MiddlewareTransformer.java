@@ -5,7 +5,6 @@ import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> {
@@ -20,12 +19,12 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
         return new MiddlewareTransformer<T>(middleware);
     }
 
-    public static <T> ObservableTransformer<Object, ReducerTransformerParams<T>> from(final State<T> state, final Consumer<Object> dispatch, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> ObservableTransformer<Object, ReducerTransformerParams<T>> from(final State<T> state, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
         return new ObservableTransformer<Object, ReducerTransformerParams<T>>() {
             @Override
             public ObservableSource<ReducerTransformerParams<T>> apply(Observable<Object> observable) {
                 return observable
-                        .map(MiddlewareParams.map(state, dispatch))
+                        .map(MiddlewareParams.map(state))
                         .compose(new MiddlewareTransformer<T>(middleware));
             }
         };

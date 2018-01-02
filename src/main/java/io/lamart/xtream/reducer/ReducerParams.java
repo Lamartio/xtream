@@ -1,10 +1,9 @@
 package io.lamart.xtream.reducer;
 
+import io.lamart.xtream.store.StoreParams;
 import io.reactivex.functions.Function;
 
-import java.util.concurrent.Callable;
-
-public final class ReducerParams<T> implements Callable<T> {
+public final class ReducerParams<T> implements StoreParams<T> {
 
     public final T state;
     public final Object action;
@@ -12,6 +11,21 @@ public final class ReducerParams<T> implements Callable<T> {
     private ReducerParams(T state, Object action) {
         this.state = state;
         this.action = action;
+    }
+
+    @Override
+    public T call() throws Exception {
+        return state;
+    }
+
+    @Override
+    public T getState() {
+        return state;
+    }
+
+    @Override
+    public Object getAction() {
+        return action;
     }
 
     public static <T> Function<T, ReducerParams<T>> map(final ReducerParams<T> params) {
@@ -39,10 +53,5 @@ public final class ReducerParams<T> implements Callable<T> {
                 return new ReducerParams<T>(state, action);
             }
         };
-    }
-
-    @Override
-    public T call() throws Exception {
-        return state;
     }
 }

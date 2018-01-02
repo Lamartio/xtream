@@ -8,8 +8,8 @@ import java.util.concurrent.Callable;
 
 public class ReducerTransformerParams<T> implements Callable<T>, Consumer<T> {
 
-    public final Object action;
     private final State<T> state;
+    public final Object action;
 
     private ReducerTransformerParams(State<T> state, Object action) {
         this.state = state;
