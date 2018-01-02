@@ -6,9 +6,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import io.reactivex.observables.ConnectableObservable;
 
-public interface StoreInitializer<T> extends Function3<State<T>, Consumer<Object>, Observable<Object>, ConnectableObservable<T>> {
+public interface StoreInitializer<T> extends Function3<Observable<Object>, State<T>, Consumer<Object>, ConnectableObservable<T>> {
 
     @Override
-    ConnectableObservable<T> apply(State<T> state, Consumer<Object> dispatch, Observable<Object> observable) throws Exception;
+    ConnectableObservable<T> apply(Observable<Object> observable, State<T> state, Consumer<Object> dispatch) throws Exception;
 
 }

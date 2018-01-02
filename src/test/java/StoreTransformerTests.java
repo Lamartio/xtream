@@ -1,7 +1,8 @@
 import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.reducer.Reducer;
-import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.reducer.ReducerUtil;
 import io.lamart.xtream.state.State;
+import io.lamart.xtream.state.VolatileState;
 import io.lamart.xtream.store.StoreTransformer;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -13,13 +14,13 @@ import java.util.List;
 
 public class StoreTransformerTests {
 
-    private final Reducer<Integer> incrementReducer = (state, action) -> state + 1;
+    private final Reducer<Integer> incrementReducer = ReducerUtil.map((state, action) -> state + 1);
     private final Consumer<Object> mockDispatch = action -> {
     };
 
     @Test
     public void reducer() {
-        final State<Integer> state = new AtomicState<>(0);
+        final State<Integer> state = new VolatileState<>(0);
         final StoreTransformer<Integer> transformer = StoreTransformer.fromReducer(state, incrementReducer);
 
         assertReducer(transformer, 1, 2, 3);
@@ -27,7 +28,7 @@ public class StoreTransformerTests {
 
     @Test
     public void middleware() {
-        final State<Integer> state = new AtomicState<>(0);
+        final State<Integer> state = new VolatileState<>(0);
         final List<String> actions = new ArrayList<>();
         final Middleware<Integer> middleware = observable -> observable.map(params -> {
             String action = params.action + "!";
@@ -43,7 +44,7 @@ public class StoreTransformerTests {
 
     @Test
     public void middlewareAndReducer() {
-        final State<Integer> state = new AtomicState<>(0);
+        final State<Integer> state = new VolatileState<>(0);
         final List<String> actions = new ArrayList<>();
         final Middleware<Integer> middleware = observable -> observable.map(params -> {
             String action = params.action + "!";

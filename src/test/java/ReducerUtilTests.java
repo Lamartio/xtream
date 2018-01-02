@@ -1,30 +1,33 @@
-import io.lamart.xtream.reducer.Reducer;
-import io.lamart.xtream.reducer.ReducerParams;
-import io.lamart.xtream.reducer.ReducerTransformer;
-import io.lamart.xtream.reducer.ReducerUtil;
-import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.reducer.*;
 import io.lamart.xtream.state.State;
+import io.lamart.xtream.state.VolatileState;
 import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
 public class ReducerUtilTests {
 
-    private final Reducer<Integer> incrementReducer = (integer, action) -> integer + 1;
-    private final Reducer<Integer> duplicateReducer = (integer, action) -> integer * 2;
-    private final Reducer<Integer> decrementReducer = (integer, action) -> integer - 1;
+    private final Reducer<Integer> incrementReducer = ReducerUtil.map((integer, action) -> integer + 1);
+    private final Reducer<Integer> duplicateReducer = ReducerUtil.map((integer, action) -> integer * 2);
+    private final Reducer<Integer> decrementReducer = ReducerUtil.map((integer, action) -> integer - 1);
 
     @Test
     public void testIncrements() {
         Observable
                 .just(1, 2, 3)
-                .map(integer -> incrementReducer.apply(integer, null))
+                .map(ReducerParams.map(""))
+                .flatMapSingle(new Function<ReducerParams<Integer>, SingleSource<?>>() {
+                    @Override
+                    public SingleSource<?> apply(ReducerParams<Integer> params) throws Exception {
+                        return Single.just(params).compose(incrementReducer);
+                    }
+                })
                 .test()
                 .assertValues(2, 3, 4);
     }
@@ -33,11 +36,11 @@ public class ReducerUtilTests {
     @Test
     public void filter() {
         final Reducer<Integer> reducer = ReducerUtil.filter(String.class, incrementReducer);
-        final State<Integer> state = new AtomicState<>(0);
+        final State<Integer> state = new VolatileState<>(0);
 
         Observable
                 .just("increment", 0, "increment")
-                .map(ReducerParams.map(state))
+                .map(ReducerTransformerParams.map(state))
                 .compose(ReducerTransformer.from(reducer))
                 .test()
                 .assertValues(1, 1, 2)
@@ -52,7 +55,13 @@ public class ReducerUtilTests {
 
         Observable
                 .just(1, 2, 3)
-                .map(integer -> reducer.apply(integer, null))
+                .map(ReducerParams.map(""))
+                .flatMapSingle(new Function<ReducerParams<Integer>, SingleSource<?>>() {
+                    @Override
+                    public SingleSource<?> apply(ReducerParams<Integer> params) throws Exception {
+                        return Single.just(params).compose(reducer);
+                    }
+                })
                 .test()
                 .assertValueSequence(list)
                 .assertNoErrors()
@@ -60,34 +69,34 @@ public class ReducerUtilTests {
     }
 
     @Test
-    public void wrapArray() throws Exception {
-        final BiFunction<Integer, Object, Integer> reducer = ReducerUtil.wrap(
-                incrementReducer,
-                duplicateReducer,
-                decrementReducer
-        );
-        final int result = reducer.apply(1, null);
-
-        assertEquals(result, 3);
-    }
-
-    @Test
     public void wrapIterable() throws Exception {
-        final BiFunction<Integer, Object, Integer> reducer = ReducerUtil.wrap(Arrays.asList(
+        final Reducer<Integer> reducer = ReducerUtil.wrap(Arrays.asList(
                 incrementReducer,
                 duplicateReducer,
                 decrementReducer
         ));
-        final int result = reducer.apply(1, null);
 
-        assertEquals(result, 3);
+        Single
+                .just(1)
+                .map(ReducerParams.map(""))
+                .flatMap(new Function<ReducerParams<Integer>, SingleSource<?>>() {
+                    @Override
+                    public SingleSource<?> apply(ReducerParams<Integer> params) throws Exception {
+                        return Single.just(params).compose(reducer);
+                    }
+                })
+                .test()
+                .assertValue(3)
+                .assertNoErrors()
+                .assertComplete();
     }
 
     @Test
     public void compose() {
         Observable
                 .just("increment")
-                .compose(ReducerTransformer.from(new AtomicState<>(0), incrementReducer))
+                .map(ReducerTransformerParams.map(new VolatileState<>(0)))
+                .compose(ReducerTransformer.from(new VolatileState<>(0), incrementReducer))
                 .test()
                 .assertValue(1)
                 .assertNoErrors()
@@ -98,7 +107,7 @@ public class ReducerUtilTests {
     public void mapAndCompose() {
         Observable
                 .just("increment")
-                .map(ReducerParams.map(new AtomicState<>(0)))
+                .map(ReducerTransformerParams.map(new VolatileState<>(0)))
                 .compose(ReducerTransformer.from(incrementReducer))
                 .test()
                 .assertValue(1)

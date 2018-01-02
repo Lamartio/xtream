@@ -104,24 +104,13 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> wrap(ObservableTransformer<MiddlewareParams<T>, Object>... middlewareArray) {
+    public static <T> Middleware<T> wrap(Middleware<T>... middlewareArray) {
         return wrap(Arrays.asList(middlewareArray));
     }
 
-    public static <T> Middleware<T> wrap(final Iterable<ObservableTransformer<MiddlewareParams<T>, Object>> middlewareIterable) {
+    public static <T> Middleware<T> wrap(final Iterable<Middleware<T>> middlewareIterable) {
         return Observable
                 .fromIterable(middlewareIterable)
-                .map(new Function<ObservableTransformer<MiddlewareParams<T>, Object>, Middleware<T>>() {
-                    @Override
-                    public Middleware<T> apply(final ObservableTransformer<MiddlewareParams<T>, Object> middleware) throws Exception {
-                        return new Middleware<T>() {
-                            @Override
-                            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> observable) {
-                                return middleware.apply(observable);
-                            }
-                        };
-                    }
-                })
                 .reduce(new BiFunction<Middleware<T>, Middleware<T>, Middleware<T>>() {
                     @Override
                     public Middleware<T> apply(Middleware<T> previous, Middleware<T> next) throws Exception {

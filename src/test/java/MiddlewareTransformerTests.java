@@ -2,9 +2,9 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.middleware.MiddlewareParams;
 import io.lamart.xtream.middleware.MiddlewareTransformer;
 import io.lamart.xtream.middleware.MiddlewareUtil;
-import io.lamart.xtream.reducer.ReducerParams;
-import io.lamart.xtream.state.AtomicState;
+import io.lamart.xtream.reducer.ReducerTransformerParams;
 import io.lamart.xtream.state.State;
+import io.lamart.xtream.state.VolatileState;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import org.junit.Test;
@@ -15,8 +15,8 @@ public class MiddlewareTransformerTests {
 
     @Test
     public void withMiddlewareParams() {
-        final State<Integer> state = new AtomicState<>(0);
-        final ObservableTransformer<MiddlewareParams<Integer>, ReducerParams<Integer>> transformer
+        final State<Integer> state = new VolatileState<>(0);
+        final ObservableTransformer<MiddlewareParams<Integer>, ReducerTransformerParams<Integer>> transformer
                 = MiddlewareTransformer.from(exclamationMiddleware);
 
         Observable
@@ -31,8 +31,8 @@ public class MiddlewareTransformerTests {
 
     @Test
     public void withoutMiddlewareParams() {
-        final State<Integer> state = new AtomicState<>(0);
-        final ObservableTransformer<Object, ReducerParams<Integer>> transformer = MiddlewareTransformer.from(
+        final State<Integer> state = new VolatileState<>(0);
+        final ObservableTransformer<Object, ReducerTransformerParams<Integer>> transformer = MiddlewareTransformer.from(
                 state,
                 Mock.DISPATCH,
                 exclamationMiddleware

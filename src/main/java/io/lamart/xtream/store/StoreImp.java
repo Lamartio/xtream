@@ -22,7 +22,7 @@ abstract class StoreImp<T> extends Store<T> {
 
     protected static <T> Observable<T> apply(StoreInitializer<T> initializer, State<T> state, Consumer<Object> dispatch, Observable<Object> source) {
         try {
-            final ConnectableObservable<T> observable = initializer.apply(state, dispatch, source);
+            final ConnectableObservable<T> observable = initializer.apply(source, state, dispatch);
 
             observable.connect();
             return observable;

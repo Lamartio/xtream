@@ -1,5 +1,6 @@
 import io.lamart.xtream.store.Store;
-import io.lamart.xtream.store.StoreTransformer;
+import io.lamart.xtream.store.StoreObservable;
+import io.lamart.xtream.store.StoreSubject;
 import io.reactivex.observers.TestObserver;
 import org.junit.Test;
 
@@ -7,10 +8,7 @@ public class StoreTests {
 
     @Test
     public void fromObservable() throws Exception {
-        final Store<Integer> store = Store.fromObservable(0, (state, dispatch, observable) -> observable
-                .compose(StoreTransformer.fromReducer(state, Mock.MATH_REDUCER))
-                .publish()
-        );
+        final Store<Integer> store = StoreObservable.fromReducer(0, Mock.MATH_REDUCER);
         final TestObserver<Integer> observer1 = store.test();
 
         store.dispatch("increment");
@@ -24,10 +22,7 @@ public class StoreTests {
 
     @Test
     public void fromSubject() throws Exception {
-        final Store<Integer> store = Store.fromSubject(0, (state, dispatch, observable) -> observable
-                .compose(StoreTransformer.fromReducer(state, Mock.MATH_REDUCER))
-                .publish()
-        );
+        final Store<Integer> store = StoreSubject.fromReducer(0, Mock.MATH_REDUCER);
         final TestObserver<Integer> test1 = store.test();
 
         store.dispatch("increment");

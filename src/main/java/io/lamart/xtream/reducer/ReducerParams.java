@@ -1,37 +1,48 @@
 package io.lamart.xtream.reducer;
 
-import io.lamart.xtream.state.State;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 import java.util.concurrent.Callable;
 
-public class ReducerParams<T> implements Callable<T>, Consumer<T> {
+public final class ReducerParams<T> implements Callable<T> {
 
-    private final State<T> state;
+    public final T state;
     public final Object action;
 
-    private ReducerParams(State<T> state, Object action) {
+    private ReducerParams(T state, Object action) {
         this.state = state;
         this.action = action;
     }
 
-    @Override
-    public T call() throws Exception {
-        return state.call();
-    }
-
-    @Override
-    public void accept(T state) throws Exception {
-        this.state.accept(state);
-    }
-
-    public static <T> Function<Object, ReducerParams<T>> map(final State<T> state) {
-        return new Function<Object, ReducerParams<T>>() {
+    public static <T> Function<T, ReducerParams<T>> map(final ReducerParams<T> params) {
+        return new Function<T, ReducerParams<T>>() {
             @Override
-            public ReducerParams<T> apply(Object action) throws Exception {
+            public ReducerParams<T> apply(T state) throws Exception {
+                return new ReducerParams<T>(state, params.action);
+            }
+        };
+    }
+
+    static <T> Function<ReducerTransformerParams<T>, ReducerParams<T>> map() {
+        return new Function<ReducerTransformerParams<T>, ReducerParams<T>>() {
+            @Override
+            public ReducerParams<T> apply(ReducerTransformerParams<T> params) throws Exception {
+                return new ReducerParams<T>(params.call(), params.action);
+            }
+        };
+    }
+
+    public static <T> Function<T, ReducerParams<T>> map(final Object action) {
+        return new Function<T, ReducerParams<T>>() {
+            @Override
+            public ReducerParams<T> apply(T state) throws Exception {
                 return new ReducerParams<T>(state, action);
             }
         };
+    }
+
+    @Override
+    public T call() throws Exception {
+        return state;
     }
 }

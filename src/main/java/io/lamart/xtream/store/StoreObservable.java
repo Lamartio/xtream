@@ -1,14 +1,11 @@
 package io.lamart.xtream.store;
 
 import io.lamart.xtream.middleware.MiddlewareParams;
+import io.lamart.xtream.reducer.ReducerParams;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
 import io.lamart.xtream.util.DispatchWrapper;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.functions.BiFunction;
+import io.reactivex.*;
 import io.reactivex.functions.Consumer;
 
 import java.util.concurrent.Callable;
@@ -27,11 +24,11 @@ public final class StoreObservable<T> extends StoreImp<T> {
         return from(initialState, StoreInitializerUtil.fromMiddleware(middleware));
     }
 
-    public static <T> Store<T> fromReducer(T initialState, BiFunction<T, Object, T> reducer) {
+    public static <T> Store<T> fromReducer(T initialState, SingleTransformer<ReducerParams<T>, T> reducer) {
         return from(initialState, StoreInitializerUtil.fromReducer(reducer));
     }
 
-    public static <T> StoreObservable<T> from(T initialState, ObservableTransformer<MiddlewareParams<T>, Object> middleware, BiFunction<T, Object, T> reducer) {
+    public static <T> StoreObservable<T> from(T initialState, ObservableTransformer<MiddlewareParams<T>, Object> middleware, SingleTransformer<ReducerParams<T>, T> reducer) {
         return from(initialState, StoreInitializerUtil.from(middleware, reducer));
     }
 

@@ -1,11 +1,13 @@
 package io.lamart.xtream.reducer;
 
 
-import io.reactivex.functions.BiFunction;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.SingleTransformer;
 
-public interface Reducer<T> extends BiFunction<T, Object, T> {
+public interface Reducer<T> extends SingleTransformer<ReducerParams<T>, T> {
 
     @Override
-    T apply(T state, Object action) throws Exception;
+    SingleSource<T> apply(Single<ReducerParams<T>> upstream);
 
 }
