@@ -1,11 +1,7 @@
 import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.reducer.ReducerUtil;
-import io.reactivex.functions.Consumer;
 
 public final class Mock {
-
-    public final static Consumer<Object> DISPATCH = action -> {
-    };
 
     /**
      * The reducer supports incrementing, decrementing and doubling an integer.

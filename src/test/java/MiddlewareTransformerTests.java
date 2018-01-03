@@ -21,7 +21,7 @@ public class MiddlewareTransformerTests {
 
         Observable
                 .just("a", "b", "c")
-                .map(MiddlewareParams.map(state, Mock.DISPATCH))
+                .map(MiddlewareParams.map(state))
                 .compose(transformer)
                 .map(params -> params.action)
                 .test()
@@ -34,7 +34,6 @@ public class MiddlewareTransformerTests {
         final State<Integer> state = new VolatileState<>(0);
         final ObservableTransformer<Object, ReducerTransformerParams<Integer>> transformer = MiddlewareTransformer.from(
                 state,
-                Mock.DISPATCH,
                 exclamationMiddleware
         );
 

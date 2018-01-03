@@ -60,7 +60,7 @@ public class MiddlewareUtilTests {
 
     @Test
     public void flatMap() {
-        final Middleware<Object> middleware = MiddlewareUtil.flatMap((state, action) -> Arrays.asList(action, action));
+        final Middleware<Object> middleware = MiddlewareUtil.flatMapIterable((state, action) -> Arrays.asList(action, action));
 
         newActionsObservable(1, 2, 3)
                 .compose(middleware)
@@ -103,7 +103,7 @@ public class MiddlewareUtilTests {
     private Observable<MiddlewareParams<Object>> newActionsObservable(Object... actions) {
         return Observable
                 .fromArray(actions)
-                .map(MiddlewareParams.map(new MockState(), null));
+                .map(MiddlewareParams.map(new MockState()));
     }
 
     private final class MockState implements State<Object> {

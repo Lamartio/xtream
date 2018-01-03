@@ -12,7 +12,7 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
-    public static <T> Middleware<T> none(final BiConsumer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> Middleware<T> none(final BiConsumer<Callable<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -33,7 +33,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> maybe(final BiFunction<MiddlewareParams<T>, Object, Object> middleware) {
+    public static <T> Middleware<T> maybe(final BiFunction<Callable<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -53,7 +53,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> map(final BiFunction<MiddlewareParams<T>, Object, Object> middleware) {
+    public static <T> Middleware<T> map(final BiFunction<Callable<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -67,21 +67,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> flatMap(final BiFunction<MiddlewareParams<T>, Object, Iterable<Object>> middleware) {
-        return new Middleware<T>() {
-            @Override
-            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
-                return upstream.flatMapIterable(new Function<MiddlewareParams<T>, Iterable<?>>() {
-                    @Override
-                    public Iterable<?> apply(MiddlewareParams<T> params) throws Exception {
-                        return middleware.apply(params, params.action);
-                    }
-                });
-            }
-        };
-    }
-
-    public static <T> Middleware<T> just(final BiConsumer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> Middleware<T> just(final BiConsumer<Callable<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
@@ -99,6 +85,66 @@ public final class MiddlewareUtil {
                                 return params.action;
                             }
                         });
+            }
+        };
+    }
+
+    public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Emitter<Object>> middleware) {
+        return emit(new BiConsumer<MiddlewareParams<T>, Emitter<Object>>() {
+            @Override
+            public void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception {
+                try {
+                    middleware.accept(params, emitter);
+                } finally {
+                    emitter.onComplete();
+                }
+            }
+        });
+    }
+
+    public static <T> Middleware<T> emit(final BiConsumer<MiddlewareParams<T>, Emitter<Object>> middleware) {
+        return new Middleware<T>() {
+            @Override
+            public ObservableSource<Object> apply(final Observable<MiddlewareParams<T>> upstream) {
+                return upstream.flatMap(new Function<MiddlewareParams<T>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(final MiddlewareParams<T> params) throws Exception {
+                        return Observable.create(new ObservableOnSubscribe<Object>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                                middleware.accept(params, emitter);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public static <T> Middleware<T> flatMap(final BiFunction<Callable<T>, Object, ObservableSource<Object>> middleware) {
+        return new Middleware<T>() {
+            @Override
+            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
+                return upstream.flatMap(new Function<MiddlewareParams<T>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(MiddlewareParams<T> params) throws Exception {
+                        return middleware.apply(params, params.action);
+                    }
+                });
+            }
+        };
+    }
+
+    public static <T> Middleware<T> flatMapIterable(final BiFunction<Callable<T>, Object, Iterable<Object>> middleware) {
+        return new Middleware<T>() {
+            @Override
+            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
+                return upstream.flatMapIterable(new Function<MiddlewareParams<T>, Iterable<?>>() {
+                    @Override
+                    public Iterable<?> apply(MiddlewareParams<T> params) throws Exception {
+                        return middleware.apply(params, params.action);
+                    }
+                });
             }
         };
     }
@@ -122,6 +168,7 @@ public final class MiddlewareUtil {
 
     public static <T> Middleware<T> combine(final ObservableTransformer<MiddlewareParams<T>, Object> previous, final ObservableTransformer<MiddlewareParams<T>, Object> next) {
         return new Middleware<T>() {
+
             @Override
             public ObservableSource<Object> apply(final Observable<MiddlewareParams<T>> upstream) {
                 return upstream.flatMap(new Function<MiddlewareParams<T>, ObservableSource<Object>>() {

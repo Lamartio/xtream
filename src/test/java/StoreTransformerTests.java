@@ -6,11 +6,12 @@ import io.lamart.xtream.state.VolatileState;
 import io.lamart.xtream.store.StoreTransformer;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class StoreTransformerTests {
 
@@ -36,7 +37,7 @@ public class StoreTransformerTests {
             actions.add(action);
             return action;
         });
-        final StoreTransformer<Integer> transformer = StoreTransformer.fromMiddleware(state, mockDispatch, middleware);
+        final StoreTransformer<Integer> transformer = StoreTransformer.fromMiddleware(state, middleware);
 
         assertReducer(transformer, 0, 0, 0);
         assertMiddleware(actions);
@@ -52,7 +53,7 @@ public class StoreTransformerTests {
             actions.add(action);
             return action;
         });
-        final StoreTransformer<Integer> transformer = StoreTransformer.from(state, mockDispatch, middleware, incrementReducer);
+        final StoreTransformer<Integer> transformer = StoreTransformer.from(state, middleware, incrementReducer);
 
         assertReducer(transformer, 1, 2, 3);
         assertMiddleware(actions);
@@ -69,10 +70,9 @@ public class StoreTransformerTests {
     }
 
     private void assertMiddleware(List<String> actions) {
-        Assert.assertEquals(actions.get(0), "a!");
-        Assert.assertEquals(actions.get(1), "b!");
-        Assert.assertEquals(actions.get(2), "c!");
+        assertEquals(actions.get(0), "a!");
+        assertEquals(actions.get(1), "b!");
+        assertEquals(actions.get(2), "c!");
     }
-
 
 }
