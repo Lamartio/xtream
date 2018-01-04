@@ -1,10 +1,9 @@
 package io.lamart.xtream.store;
 
 import io.lamart.xtream.middleware.Middleware;
-import io.lamart.xtream.reducer.ReducerParams;
+import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
-import io.reactivex.SingleTransformer;
 import io.reactivex.observables.ConnectableObservable;
 
 public final class StoreInitializerUtil {
@@ -22,7 +21,7 @@ public final class StoreInitializerUtil {
         };
     }
 
-    public static <T> StoreInitializer<T> fromReducer(final SingleTransformer<ReducerParams<T>, T> reducer) {
+    public static <T> StoreInitializer<T> fromReducer(final Reducer<T> reducer) {
         return new StoreInitializer<T>() {
             @Override
             public ConnectableObservable<T> apply(Observable<Object> observable, State<T> state) throws Exception {
@@ -40,7 +39,7 @@ public final class StoreInitializerUtil {
         };
     }
 
-    public static <T> StoreInitializer<T> from(final Middleware<T> middleware, final SingleTransformer<ReducerParams<T>, T> reducer) {
+    public static <T> StoreInitializer<T> from(final Middleware<T> middleware, final Reducer<T> reducer) {
         return new StoreInitializer<T>() {
             @Override
             public ConnectableObservable<T> apply(Observable<Object> observable, State<T> state) throws Exception {
