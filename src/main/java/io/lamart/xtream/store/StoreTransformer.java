@@ -1,6 +1,6 @@
 package io.lamart.xtream.store;
 
-import io.lamart.xtream.middleware.MiddlewareParams;
+import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.middleware.MiddlewareTransformer;
 import io.lamart.xtream.reducer.ReducerParams;
 import io.lamart.xtream.reducer.ReducerTransformer;
@@ -25,7 +25,7 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
 
     public static <T> StoreTransformer<T> from(
             final State<T> state,
-            final ObservableTransformer<MiddlewareParams<T>, Object> middleware,
+            final Middleware<T> middleware,
             final SingleTransformer<ReducerParams<T>, T> reducer
     ) {
         return new StoreTransformer<T>() {
@@ -49,7 +49,7 @@ public abstract class StoreTransformer<T> implements ObservableTransformer<Objec
 
     public static <T> StoreTransformer<T> fromMiddleware(
             final State<T> state,
-            final ObservableTransformer<MiddlewareParams<T>, Object> middleware
+            final Middleware<T> middleware
     ) {
         return new StoreTransformer<T>() {
             @Override

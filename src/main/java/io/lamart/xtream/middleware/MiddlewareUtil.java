@@ -150,17 +150,28 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> wrap(Middleware<T>... middlewareArray) {
-        return wrap(Arrays.asList(middlewareArray));
+    public static <T> Middleware<T> wrap(ObservableTransformer<MiddlewareParams<T>, Object>... middleware) {
+        return wrap(Arrays.asList(middleware));
     }
 
-    public static <T> Middleware<T> wrap(final Iterable<Middleware<T>> middlewareIterable) {
+    public static <T> Middleware<T> wrap(final Iterable<ObservableTransformer<MiddlewareParams<T>, Object>> middleware) {
         return Observable
-                .fromIterable(middlewareIterable)
-                .reduce(new BiFunction<Middleware<T>, Middleware<T>, Middleware<T>>() {
+                .fromIterable(middleware)
+                .reduce(new BiFunction<ObservableTransformer<MiddlewareParams<T>, Object>, ObservableTransformer<MiddlewareParams<T>, Object>, ObservableTransformer<MiddlewareParams<T>, Object>>() {
                     @Override
-                    public Middleware<T> apply(Middleware<T> previous, Middleware<T> next) throws Exception {
+                    public ObservableTransformer<MiddlewareParams<T>, Object> apply(ObservableTransformer<MiddlewareParams<T>, Object> previous, ObservableTransformer<MiddlewareParams<T>, Object> next) throws Exception {
                         return combine(previous, next);
+                    }
+                })
+                .map(new Function<ObservableTransformer<MiddlewareParams<T>, Object>, Middleware<T>>() {
+                    @Override
+                    public Middleware<T> apply(final ObservableTransformer<MiddlewareParams<T>, Object> middleware) throws Exception {
+                        return new Middleware<T>() {
+                            @Override
+                            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
+                                return middleware.apply(upstream);
+                            }
+                        };
                     }
                 })
                 .blockingGet(MiddlewareUtil.<T>newDefaultInstance());

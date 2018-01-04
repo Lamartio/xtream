@@ -9,17 +9,17 @@ import io.reactivex.functions.Function;
 
 public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> {
 
-    private final ObservableTransformer<MiddlewareParams<T>, Object> middleware;
+    private final Middleware<T> middleware;
 
-    private MiddlewareTransformer(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    private MiddlewareTransformer(Middleware<T> middleware) {
         this.middleware = middleware;
     }
 
-    public static <T> MiddlewareTransformer<T> from(ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> MiddlewareTransformer<T> from(Middleware<T> middleware) {
         return new MiddlewareTransformer<T>(middleware);
     }
 
-    public static <T> ObservableTransformer<Object, ReducerTransformerParams<T>> from(final State<T> state, final ObservableTransformer<MiddlewareParams<T>, Object> middleware) {
+    public static <T> ObservableTransformer<Object, ReducerTransformerParams<T>> from(final State<T> state, final Middleware<T> middleware) {
         return new ObservableTransformer<Object, ReducerTransformerParams<T>>() {
             @Override
             public ObservableSource<ReducerTransformerParams<T>> apply(Observable<Object> observable) {
