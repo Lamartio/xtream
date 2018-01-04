@@ -11,11 +11,11 @@ public class StoreTests {
 
     private final Middleware<Integer> doMathMiddleware = MiddlewareUtil.emitComplete((params, emitter) -> {
         assertEquals((int) params.getState(), 1);
-        emitter.onNext("increment");
+        emitter.accept("increment");
         assertEquals((int) params.getState(), 2);
-        emitter.onNext("duplicate");
+        emitter.accept("duplicate");
         assertEquals((int) params.getState(), 4);
-        emitter.onNext("decrement");
+        emitter.accept("decrement");
         assertEquals((int) params.getState(), 3);
     });
 
