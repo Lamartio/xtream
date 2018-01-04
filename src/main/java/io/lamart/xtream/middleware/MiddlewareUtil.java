@@ -1,5 +1,6 @@
 package io.lamart.xtream.middleware;
 
+import io.lamart.xtream.util.DispatchUtil;
 import io.reactivex.*;
 import io.reactivex.functions.*;
 
@@ -89,12 +90,12 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Emitter<Object>> middleware) {
+    public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Consumer<Object>> middleware) {
         return emit(new BiConsumer<MiddlewareParams<T>, Emitter<Object>>() {
             @Override
             public void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception {
                 try {
-                    middleware.accept(params, emitter);
+                    middleware.accept(params, DispatchUtil.from(emitter));
                 } finally {
                     emitter.onComplete();
                 }

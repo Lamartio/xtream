@@ -59,7 +59,30 @@ public class MiddlewareUtilTests {
     }
 
     @Test
+    public void test() {
+        final Middleware<Object> middleware = MiddlewareUtil.emitComplete((params, consumer) -> {
+            consumer.accept(params.action);
+            consumer.accept(params.action);
+        });
+
+        newActionsObservable(1, 2, 3)
+                .compose(middleware)
+                .test()
+                .assertValues(1, 1, 2, 2, 3, 3);
+    }
+
+    @Test
     public void flatMap() {
+        final Middleware<Object> middleware = MiddlewareUtil.flatMap((getState, action) -> Observable.just(action, action));
+
+        newActionsObservable(1, 2, 3)
+                .compose(middleware)
+                .test()
+                .assertValues(1, 1, 2, 2, 3, 3);
+    }
+
+    @Test
+    public void flatMapIterable() {
         final Middleware<Object> middleware = MiddlewareUtil.flatMapIterable((state, action) -> Arrays.asList(action, action));
 
         newActionsObservable(1, 2, 3)
@@ -83,16 +106,6 @@ public class MiddlewareUtilTests {
     @Test
     public void wrapArray() {
         final Middleware<Object> middleware = MiddlewareUtil.wrap(middlewareForWrap);
-
-        newActionsObservable(1, 2, 3)
-                .compose(middleware)
-                .test()
-                .assertValues("4", "6", "8");
-    }
-
-    @Test
-    public void wrapIterable() {
-        final Middleware<Object> middleware = MiddlewareUtil.wrap(Arrays.asList(middlewareForWrap));
 
         newActionsObservable(1, 2, 3)
                 .compose(middleware)
