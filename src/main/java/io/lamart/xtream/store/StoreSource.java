@@ -13,17 +13,8 @@ public interface StoreSource<T> {
 
     class Instance<T> implements StoreSource<T> {
 
-        private final Middleware<T> middleware;
-        private final Reducer<T> reducer;
-
-        public Instance() {
-            this(MiddlewareUtil.<T>newDefaultInstance(), ReducerUtil.<T>newDefaultInstance());
-        }
-
-        public Instance(Middleware<T> middleware, Reducer<T> reducer) {
-            this.middleware = middleware;
-            this.reducer = reducer;
-        }
+        private Middleware<T> middleware = MiddlewareUtil.newDefaultInstance();
+        private Reducer<T> reducer = ReducerUtil.newDefaultInstance();
 
         @Override
         public Middleware<T> getMiddleware() {
@@ -34,6 +25,21 @@ public interface StoreSource<T> {
         public Reducer<T> getReducer() {
             return reducer;
         }
+
+        public Instance<T> add(Reducer<T> reducer) {
+            this.reducer = ReducerUtil.combine(this.reducer, reducer);
+            return this;
+        }
+
+        public Instance<T> add(Middleware<T> middleware) {
+            this.middleware = MiddlewareUtil.combine(this.middleware, middleware);
+            return this;
+        }
+
+        public Instance<T> add(StoreSource<T> source) {
+            return add(source.getMiddleware()).add(source.getReducer());
+        }
+
     }
 
 }
