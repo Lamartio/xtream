@@ -44,9 +44,7 @@ public Middleware<AppState> newMiddleware() {
 Creating middleware this way can be complex. For simpler implementations, please check out the static functions in the ```MiddlewareUtil``` class.
 
 ## Creating reducers
-A reducer is a [SingleTransformer](http://reactivex.io/RxJava/javadoc/io/reactivex/SingleTransformer.html) that has the `state` and `action` as a parameter and expects a state as its return value.
-
-In addition to the reactive way of creating a reducer, the `ReducerUtil` class contains functions for creating more conventional reducers.
+A reducer is a [SingleTransformer](http://reactivex.io/RxJava/javadoc/io/reactivex/SingleTransformer.html) that has the `state` and `action` as a parameter and expects a state as its return value. In addition to the reactive way of creating a reducer, the `ReducerUtil` class contains functions for creating more conventional reducers.
 
 ```java
 private Reducer<AppState> newReducer() {
