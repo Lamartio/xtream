@@ -24,7 +24,7 @@ Uses the powerful functionality of ReactiveX for creating a Redux store. To get 
 If you want more options, please check the overloads of `StoreSubject.from` or `StoreObservable.from`.
 
 ## Creating middleware
-A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io/reactivex/ObservableTransformer.html) that has the `action` and a `.getState()` function as parameters and returns 0, 1 more actions.
+A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io/reactivex/ObservableTransformer.html) that has the `action` and a `.getState()` as parameters and returns 0, 1 or more actions.
 
 ```java
     public Middleware<AppState> newMiddleware() {
@@ -42,6 +42,6 @@ A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io
     }
 ```
 
-Creating middleware this way can be complex. For simpler and/or synchronous implementations, please check out the static functions in ```MiddlewareUtil```.
+Creating middleware this way can be complex. For simpler implementations, please check out the static functions in the ```MiddlewareUtil``` class.
 
 ## Creating reducers
