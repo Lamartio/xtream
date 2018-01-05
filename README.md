@@ -32,7 +32,8 @@ A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<AppState>> upstream) {
                 return upstream
-                        .filter(params -> params.action.equals("download") && !params.getState().isDownloading)
+                        .filter(params -> params.action.equals("download"))
+                        .filter(params -> !params.getState().isDownloading)
                         .flatMap(params -> download(params))
                         .map(result -> newDownloadResultAction(result))
                         .onErrorResumeNext(newDownloadErrorAction());
