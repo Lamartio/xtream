@@ -41,6 +41,6 @@ A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io
     }
 ```
 
-Creating middleware this way can be complex. For simpler and/or synchronous implementation, please check out the static functions ```MiddlewareUtil```.
+Creating middleware this way can be complex. For simpler and/or synchronous implementations, please check out the static functions in ```MiddlewareUtil```.
 
 ## Creating reducers
