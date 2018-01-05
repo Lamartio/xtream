@@ -48,7 +48,7 @@ A reducer is a [SingleTransformer](http://reactivex.io/RxJava/javadoc/io/reactiv
 
 In addition to the reactive way of creating a reducer, the `ReducerUtil` class contains functions for creating more conventional reducers.
 
-```
+```java
     private Reducer<AppState> newReducer() {
         return new Reducer<AppState>() {
             @Override
