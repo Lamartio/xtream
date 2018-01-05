@@ -1,5 +1,5 @@
 # Xtream
-Uses the powerful functionality of ReactiveX for creating a Redux store. To get started you simply create a store. The store is an Observable with the addition that it can receive actions.
+Uses the powerful functionality of ReactiveX for creating a Redux store. The store is simply an Observable with the addition that it can receive actions.
 
 ```java
 public void newStore() {
