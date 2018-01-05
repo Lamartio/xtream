@@ -35,7 +35,7 @@ A middleware is an [Observabletransformer](http://reactivex.io/RxJava/javadoc/io
                         .filter(params -> params.action.equals("download"))
                         .flatMap(params -> download(params))
                         .map(result -> (Object) new SuccessAction(result))
-                        .onErrorResumeNext(Readme.this.newErrorAction());
+                        .onErrorResumeNext(newErrorAction());
             }
         };
     }
