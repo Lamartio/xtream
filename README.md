@@ -82,7 +82,7 @@ private Reducer<AppState> newSimpleReducer() {
 ```
 
 ## Advanced usage
-Xtream enables you to hook in in every part of the framework. The example below schedules all middleware on a multithreaded scheduler and passes their actions through a single threaded scheduler to the reducer. Next the `replay()` operator is used to ensure that when an observer subscribes, it always receives the latest state.
+Xtream enables you to hook in in every part of it. The example below schedules all middleware on a multithreaded scheduler and passes their actions through a single threaded scheduler to the reducer. Next the `replay()` operator is used to ensure that when an observer subscribes, it always receives the latest state.
 
 ```java
 public void newAdvancedStore() {
