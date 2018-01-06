@@ -57,21 +57,9 @@ public final class ReducerUtil {
                 return upstream.flatMap(new Function<ReducerParams<T>, SingleSource<? extends T>>() {
                     @Override
                     public SingleSource<? extends T> apply(ReducerParams<T> params) throws Exception {
-                        return Single
-                                .just(params)
-                                .filter(new Predicate<ReducerParams<T>>() {
-                                    @Override
-                                    public boolean test(ReducerParams<T> params) throws Exception {
-                                        return actionFilter.test(params.action);
-                                    }
-                                })
-                                .flatMapSingleElement(new Function<ReducerParams<T>, SingleSource<T>>() {
-                                    @Override
-                                    public SingleSource<T> apply(ReducerParams<T> params) throws Exception {
-                                        return Single.just(params).compose(reducer);
-                                    }
-                                })
-                                .switchIfEmpty(Single.just(params.state));
+                        return actionFilter.test(params.action)
+                                ? Single.just(params).compose(reducer)
+                                : Single.just(params.state);
                     }
                 });
             }
