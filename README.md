@@ -97,6 +97,8 @@ public void newAdvancedStore() {
                     .compose(MiddlewareTransformer.from(state, middleware))
                     .observeOn(Schedulers.single())
                     .compose(ReducerTransformer.from(reducer))
+                    .startWith(Observable.fromCallable(state))
+                    .distinctUntilChanged()
                     .replay(1);
         }
     });
