@@ -105,7 +105,7 @@ public void newAdvancedStore() {
 }
 ```
 
-##license
+## License
 ```
 MIT License
 
