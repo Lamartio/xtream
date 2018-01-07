@@ -23,6 +23,7 @@
  */
 
 apply plugin: 'java-library'
+apply plugin: 'maven'
 
 repositories {
     jcenter()
@@ -39,3 +40,20 @@ compileJava {
 }
 
 version = '0.6.0'
+
+task createPom << {
+    pom {
+        project {
+            groupId 'io.lamarti'
+            artifactId 'xtream'
+            version '0.6.0'
+
+            inceptionYear '2018'
+            licenses {
+                license {
+                    name 'MIT'
+                }
+            }
+        }
+    }.writeTo("pom.xml")
+}
