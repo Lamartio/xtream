@@ -52,6 +52,7 @@ fabric.properties
 
 # Gradle template
 .gradle/
+.gradle/*
 /build/
 
 # Ignore Gradle GUI config
@@ -63,7 +64,7 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# # Work around https://youtrack.grajetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 ### Java template
 # Compiled class file

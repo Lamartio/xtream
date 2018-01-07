@@ -22,8 +22,15 @@
  * SOFTWARE.
  */
 
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
 apply plugin: 'java-library'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+version = '0.6.0'
 
 repositories {
     jcenter()
@@ -39,21 +46,32 @@ compileJava {
     targetCompatibility = 1.6
 }
 
-version = '0.6.0'
-
-task createPom << {
-    pom {
-        project {
-            groupId 'io.lamarti'
+publishing {
+    publications {
+        mavenInfo(MavenPublication) {
+            from components.java
+            groupId 'io.lamartio.xtream'
             artifactId 'xtream'
-            version '0.6.0'
-
-            inceptionYear '2018'
-            licenses {
-                license {
-                    name 'MIT'
-                }
-            }
+            version version
         }
-    }.writeTo("pom.xml")
+    }
+}
+
+bintray {
+    user = 'lamartio'
+    key = hasProperty('bintrayKey') ? property('bintrayKey') : 'keyNotFound'
+    publications = ['mavenInfo']
+    pkg {
+        repo = 'xtream'
+        name = 'xtream'
+        websiteUrl = 'https://github.com/lamartio/xtream/'
+        issueTrackerUrl = 'https://github.com/lamartio/xtream/issues/'
+        vcsUrl = 'https://github.com/Lamartio/xtream.git'
+        licenses = ['MIT']
+        version = version
+
+        dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
+        publish = true //[Default: false] Whether version should be auto published after an upload
+        override = false //[Default: false] Whether to override version artifacts already published
+    }
 }
