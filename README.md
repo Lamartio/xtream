@@ -109,7 +109,7 @@ public void newAdvancedStore() {
 ```
 MIT License
 
-Copyright (c) $today.year Danny Lamarti (Lamartio)
+Copyright (c) 2018 Danny Lamarti (Lamartio)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
