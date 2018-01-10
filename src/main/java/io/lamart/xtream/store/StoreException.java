@@ -24,35 +24,10 @@
 
 package io.lamart.xtream.store;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.functions.Consumer;
+public class StoreException extends Exception {
 
-import java.util.concurrent.Callable;
-
-public abstract class Store<T> extends Observable<T> implements Callable<T>, Observer<Object>, Consumer<Object> {
-
-    public T getState() {
-        try {
-            return call();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public StoreException(Throwable cause) {
+        super(cause);
     }
-
-    public void dispatch(Object action) {
-        try {
-            onNext(action);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void accept(Object action) throws Exception {
-        onNext(action);
-    }
-
-    @Override
-    public abstract void onNext(Object action);
 
 }

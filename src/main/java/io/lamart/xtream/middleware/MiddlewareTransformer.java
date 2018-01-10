@@ -29,7 +29,9 @@ import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.plugins.RxJavaPlugins;
 
 public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> {
 
@@ -39,7 +41,7 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
         this.middleware = middleware;
     }
 
-    public static <T> MiddlewareTransformer<T> from(Middleware<T> middleware) {
+    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> from(Middleware<T> middleware) {
         return new MiddlewareTransformer<T>(middleware);
     }
 
@@ -56,14 +58,22 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
 
     @Override
     public ObservableSource<ReducerTransformerParams<T>> apply(Observable<MiddlewareParams<T>> observable) {
-        return observable.flatMap(new Function<MiddlewareParams<T>, ObservableSource<ReducerTransformerParams<T>>>() {
-            @Override
-            public ObservableSource<ReducerTransformerParams<T>> apply(MiddlewareParams<T> params) throws Exception {
-                return Observable
-                        .just(params)
-                        .compose(middleware)
-                        .map(ReducerTransformerParams.map(params.state));
-            }
-        });
+        return observable
+                .flatMap(new Function<MiddlewareParams<T>, ObservableSource<ReducerTransformerParams<T>>>() {
+                    @Override
+                    public ObservableSource<ReducerTransformerParams<T>> apply(MiddlewareParams<T> params) throws Exception {
+                        return Observable
+                                .just(params)
+                                .compose(middleware)
+                                .map(ReducerTransformerParams.map(params.state))
+                                .doOnError(new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        RxJavaPlugins.onError(new MiddlewareException(throwable));
+                                    }
+                                })
+                                .onErrorResumeNext(Observable.<ReducerTransformerParams<T>>empty());
+                    }
+                });
     }
 }

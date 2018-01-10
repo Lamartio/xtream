@@ -28,19 +28,15 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
-import io.lamart.xtream.util.DispatchWrapper;
+import io.lamart.xtream.util.ObserverWrapper;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Observer;
 
 import java.util.concurrent.Callable;
 
 public final class StoreObservable<T> extends StoreImp<T> {
-
-    private StoreObservable(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
-        super(getState, dispatch, observable);
-    }
 
     public static <T> Store<T> fromSource(T initialState, StoreSource<T> source) {
         return from(initialState, StoreInitializerUtil.fromSource(source));
@@ -62,20 +58,24 @@ public final class StoreObservable<T> extends StoreImp<T> {
         return from(new VolatileState<T>(initialState), initializer);
     }
 
+    private StoreObservable(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
+        super(getState, observable, observer);
+    }
+
     public static <T> StoreObservable<T> from(State<T> state, final StoreInitializer<T> initializer) {
-        final DispatchWrapper dispatch = new DispatchWrapper();
+        final ObserverWrapper<Object> observer = new ObserverWrapper<Object>();
         final Observable<T> observable = apply(
                 initializer,
                 state,
                 Observable.create(new ObservableOnSubscribe<Object>() {
                     @Override
                     public void subscribe(ObservableEmitter<Object> e) throws Exception {
-                        dispatch.set(e);
+                        observer.set(e);
                     }
                 })
         );
 
-        return new StoreObservable<T>(state, dispatch, observable);
+        return new StoreObservable<T>(state, observable, observer);
     }
 
 }

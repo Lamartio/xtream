@@ -28,9 +28,8 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
-import io.lamart.xtream.util.DispatchUtil;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Observer;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
@@ -38,9 +37,6 @@ import java.util.concurrent.Callable;
 
 public final class StoreSubject<T> extends StoreImp<T> {
 
-    private StoreSubject(Callable<T> getState, Consumer<Object> dispatch, Observable<T> observable) {
-        super(getState, dispatch, observable);
-    }
 
     public static <T> StoreSubject<T> fromMiddleware(T initialState, Middleware<T> middleware) {
         return from(initialState, StoreInitializerUtil.fromMiddleware(middleware));
@@ -66,10 +62,14 @@ public final class StoreSubject<T> extends StoreImp<T> {
         return from(state, PublishSubject.create(), initializer);
     }
 
+    private StoreSubject(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
+        super(getState, observable, observer);
+    }
+
     public static <T> StoreSubject<T> from(State<T> state, Subject<Object> subject, StoreInitializer<T> initializer) {
-        final Consumer<Object> dispatch = DispatchUtil.from(subject);
         final Observable<T> observable = apply(initializer, state, subject);
 
-        return new StoreSubject<T>(state, dispatch, observable);
+        return new StoreSubject<T>(state, observable, subject);
     }
+
 }

@@ -22,43 +22,14 @@
  * SOFTWARE.
  */
 
-package io.lamart.xtream.util;
+package io.lamart.xtream.middleware;
 
-import io.reactivex.Emitter;
-import io.reactivex.Observer;
-import io.reactivex.functions.Consumer;
+import io.lamart.xtream.store.StoreException;
 
-public final class DispatchUtil {
+public class MiddlewareException extends StoreException {
 
-    private DispatchUtil() {
-        throw new Error();
-    }
-
-    public static Consumer<Object> from(final Observer<Object> observer) {
-        return new Consumer<Object>() {
-            @Override
-            public void accept(Object action) throws Exception {
-                observer.onNext(action);
-            }
-        };
-    }
-
-    public static Consumer<Object> from(final Emitter<Object> emitter) {
-        return new Consumer<Object>() {
-            @Override
-            public void accept(Object action) throws Exception {
-                emitter.onNext(action);
-            }
-        };
-    }
-
-    public static Consumer<Object> empty() {
-        return new Consumer<Object>() {
-            @Override
-            public void accept(Object action) throws Exception {
-
-            }
-        };
+    public MiddlewareException(Throwable cause) {
+        super(cause);
     }
 
 }

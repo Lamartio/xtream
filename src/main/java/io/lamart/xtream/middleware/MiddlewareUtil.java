@@ -24,7 +24,7 @@
 
 package io.lamart.xtream.middleware;
 
-import io.lamart.xtream.util.DispatchUtil;
+import io.lamart.xtream.util.ConsumerUtil;
 import io.reactivex.*;
 import io.reactivex.functions.*;
 
@@ -119,7 +119,7 @@ public final class MiddlewareUtil {
             @Override
             public void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception {
                 try {
-                    middleware.accept(params, DispatchUtil.from(emitter));
+                    middleware.accept(params, ConsumerUtil.from(emitter));
                 } finally {
                     emitter.onComplete();
                 }

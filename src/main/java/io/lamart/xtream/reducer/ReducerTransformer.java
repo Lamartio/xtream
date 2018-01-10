@@ -26,7 +26,9 @@ package io.lamart.xtream.reducer;
 
 import io.lamart.xtream.state.State;
 import io.reactivex.*;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.plugins.RxJavaPlugins;
 
 public final class ReducerTransformer<T> implements ObservableTransformer<ReducerTransformerParams<T>, T> {
 
@@ -36,7 +38,7 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
         this.reducer = reducer;
     }
 
-    public static <T> ReducerTransformer<T> from(Reducer<T> reducer) {
+    public static <T> ObservableTransformer<ReducerTransformerParams<T>, T> from(Reducer<T> reducer) {
         return new ReducerTransformer<T>(reducer);
     }
 
@@ -53,15 +55,28 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
 
     @Override
     public ObservableSource<T> apply(Observable<ReducerTransformerParams<T>> observable) {
-        return observable.flatMapSingle(new Function<ReducerTransformerParams<T>, SingleSource<T>>() {
-            @Override
-            public SingleSource<T> apply(final ReducerTransformerParams<T> params) throws Exception {
-                return Single
-                        .just(params)
-                        .map(ReducerParams.<T>map())
-                        .compose(reducer)
-                        .doOnSuccess(params);
-            }
-        });
+        return observable
+                .flatMap(new Function<ReducerTransformerParams<T>, ObservableSource<T>>() {
+                    @Override
+                    public ObservableSource<T> apply(ReducerTransformerParams<T> params) throws Exception {
+                        return Observable
+                                .just(params)
+                                .map(ReducerParams.<T>map())
+                                .flatMapSingle(new Function<ReducerParams<T>, SingleSource<T>>() {
+                                    @Override
+                                    public SingleSource<T> apply(ReducerParams<T> params) throws Exception {
+                                        return Single.just(params).compose(reducer);
+                                    }
+                                })
+                                .doOnNext(params)
+                                .doOnError(new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        RxJavaPlugins.onError(new ReducerException(throwable));
+                                    }
+                                })
+                                .onErrorResumeNext(Observable.<T>empty());
+                    }
+                });
     }
 }

@@ -22,19 +22,25 @@
  * SOFTWARE.
  */
 
-package io.lamart.xtream.store;
+package io.lamart.xtream.util;
 
+import io.reactivex.Emitter;
 import io.reactivex.functions.Consumer;
 
-import java.util.concurrent.Callable;
+public final class ConsumerUtil {
 
-public interface StoreActions<T> extends Callable<T>, Consumer<Object> {
+    private ConsumerUtil() {
+        throw new Error();
+    }
 
-    @Override
-    void accept(Object action) throws Exception;
+    public static Consumer<Object> from(final Emitter<Object> emitter) {
+        return new Consumer<Object>() {
+            @Override
+            public void accept(Object action) throws Exception {
+                emitter.onNext(action);
+            }
+        };
+    }
 
-    void dispatch(Object action);
-
-    T getState();
 
 }

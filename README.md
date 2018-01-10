@@ -15,10 +15,10 @@ public void newStore() {
         }
     });
 
-    store.dispatch("this");
-    store.dispatch("is");
-    store.dispatch("an");
-    store.dispatch("action");
+    store.observer("this");
+    store.observer("is");
+    store.observer("an");
+    store.observer("action");
 }
 ```
 If you want more options, please check the overloads of `StoreSubject.from` or `StoreObservable.from`.

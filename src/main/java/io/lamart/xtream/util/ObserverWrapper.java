@@ -22,67 +22,37 @@
  * SOFTWARE.
  */
 
-package io.lamart.xtream.store;
+package io.lamart.xtream.util;
 
-import io.lamart.xtream.state.State;
-import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observables.ConnectableObservable;
 
-import java.util.concurrent.Callable;
+public class ObserverWrapper<T> implements Observer<T> {
 
-abstract class StoreImp<T> extends Store<T> {
 
-    private final Callable<T> getState;
-    private final Observable<T> observable;
-    private final Observer<Object> observer;
-
-    StoreImp(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
-        this.getState = getState;
-        this.observable = observable;
-        this.observer = observer;
-    }
-
-    @Override
-    protected void subscribeActual(Observer<? super T> observer) {
-        observable.subscribe(observer);
-    }
-
-    @Override
-    public T call() throws Exception {
-        return getState.call();
-    }
+    private ObservableEmitter<Object> emitter;
 
     @Override
     public void onSubscribe(Disposable d) {
-        observer.onSubscribe(d);
+    }
+
+    @Override
+    public void onNext(T t) {
+        emitter.onNext(t);
     }
 
     @Override
     public void onError(Throwable e) {
-        observer.onError(e);
+        emitter.onError(e);
     }
 
     @Override
     public void onComplete() {
-        observer.onComplete();
+        emitter.onComplete();
     }
 
-    @Override
-    public void onNext(Object action) {
-        observer.onNext(action);
+    public void set(ObservableEmitter<Object> emitter) {
+        this.emitter = emitter;
     }
-
-    protected static <T> Observable<T> apply(StoreInitializer<T> initializer, State<T> state, Observable<Object> source) {
-        try {
-            final ConnectableObservable<T> observable = initializer.apply(source, state);
-
-            observable.connect();
-            return observable;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }
