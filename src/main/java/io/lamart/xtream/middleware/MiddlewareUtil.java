@@ -24,7 +24,6 @@
 
 package io.lamart.xtream.middleware;
 
-import io.lamart.xtream.util.ConsumerUtil;
 import io.reactivex.*;
 import io.reactivex.functions.*;
 
@@ -117,9 +116,14 @@ public final class MiddlewareUtil {
     public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Consumer<Object>> middleware) {
         return emit(new BiConsumer<MiddlewareParams<T>, Emitter<Object>>() {
             @Override
-            public void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception {
+            public void accept(MiddlewareParams<T> params, final Emitter<Object> emitter) throws Exception {
                 try {
-                    middleware.accept(params, ConsumerUtil.from(emitter));
+                    middleware.accept(params, new Consumer<Object>() {
+                        @Override
+                        public void accept(Object action) throws Exception {
+                            emitter.onNext(action);
+                        }
+                    });
                 } finally {
                     emitter.onComplete();
                 }

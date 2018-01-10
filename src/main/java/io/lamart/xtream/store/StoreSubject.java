@@ -62,14 +62,14 @@ public final class StoreSubject<T> extends StoreImp<T> {
         return from(state, PublishSubject.create(), initializer);
     }
 
-    private StoreSubject(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
-        super(getState, observable, observer);
-    }
-
     public static <T> StoreSubject<T> from(State<T> state, Subject<Object> subject, StoreInitializer<T> initializer) {
         final Observable<T> observable = apply(initializer, state, subject);
 
         return new StoreSubject<T>(state, observable, subject);
+    }
+
+    private StoreSubject(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
+        super(getState, observable, observer);
     }
 
 }
