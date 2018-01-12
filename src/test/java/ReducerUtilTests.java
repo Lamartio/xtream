@@ -1,4 +1,32 @@
-import io.lamart.xtream.reducer.*;
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018 Danny Lamarti (Lamartio)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+import io.lamart.xtream.middleware.MiddlewareResult;
+import io.lamart.xtream.reducer.Reducer;
+import io.lamart.xtream.reducer.ReducerParams;
+import io.lamart.xtream.reducer.ReducerTransformer;
+import io.lamart.xtream.reducer.ReducerUtil;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
 import io.reactivex.Observable;
@@ -40,7 +68,7 @@ public class ReducerUtilTests {
 
         Observable
                 .just("increment", 0, "increment")
-                .map(ReducerTransformerParams.map(state))
+                .map(MiddlewareResult.map(state))
                 .compose(ReducerTransformer.from(reducer))
                 .test()
                 .assertValues(1, 1, 2)
@@ -95,7 +123,7 @@ public class ReducerUtilTests {
     public void compose() {
         Observable
                 .just("increment")
-                .map(ReducerTransformerParams.map(new VolatileState<>(0)))
+                .map(MiddlewareResult.map(new VolatileState<>(0)))
                 .compose(ReducerTransformer.from(new VolatileState<>(0), incrementReducer))
                 .test()
                 .assertValue(1)
@@ -107,7 +135,7 @@ public class ReducerUtilTests {
     public void mapAndCompose() {
         Observable
                 .just("increment")
-                .map(ReducerTransformerParams.map(new VolatileState<>(0)))
+                .map(MiddlewareResult.map(new VolatileState<>(0)))
                 .compose(ReducerTransformer.from(incrementReducer))
                 .test()
                 .assertValue(1)

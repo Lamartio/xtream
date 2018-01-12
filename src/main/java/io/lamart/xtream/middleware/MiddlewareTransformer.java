@@ -24,7 +24,6 @@
 
 package io.lamart.xtream.middleware;
 
-import io.lamart.xtream.reducer.ReducerTransformerParams;
 import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -33,7 +32,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 
-public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> {
+public final class MiddlewareTransformer<T> implements ObservableTransformer<MiddlewareParams<T>, MiddlewareResult<T>> {
 
     private final Middleware<T> middleware;
 
@@ -41,14 +40,14 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
         this.middleware = middleware;
     }
 
-    public static <T> ObservableTransformer<MiddlewareParams<T>, ReducerTransformerParams<T>> from(Middleware<T> middleware) {
+    public static <T> ObservableTransformer<MiddlewareParams<T>, MiddlewareResult<T>> from(Middleware<T> middleware) {
         return new MiddlewareTransformer<T>(middleware);
     }
 
-    public static <T> ObservableTransformer<Object, ReducerTransformerParams<T>> from(final State<T> state, final Middleware<T> middleware) {
-        return new ObservableTransformer<Object, ReducerTransformerParams<T>>() {
+    public static <T> ObservableTransformer<Object, MiddlewareResult<T>> from(final State<T> state, final Middleware<T> middleware) {
+        return new ObservableTransformer<Object, MiddlewareResult<T>>() {
             @Override
-            public ObservableSource<ReducerTransformerParams<T>> apply(Observable<Object> observable) {
+            public ObservableSource<MiddlewareResult<T>> apply(Observable<Object> observable) {
                 return observable
                         .map(MiddlewareParams.map(state))
                         .compose(new MiddlewareTransformer<T>(middleware));
@@ -57,22 +56,22 @@ public final class MiddlewareTransformer<T> implements ObservableTransformer<Mid
     }
 
     @Override
-    public ObservableSource<ReducerTransformerParams<T>> apply(Observable<MiddlewareParams<T>> observable) {
+    public ObservableSource<MiddlewareResult<T>> apply(Observable<MiddlewareParams<T>> observable) {
         return observable
-                .flatMap(new Function<MiddlewareParams<T>, ObservableSource<ReducerTransformerParams<T>>>() {
+                .flatMap(new Function<MiddlewareParams<T>, ObservableSource<MiddlewareResult<T>>>() {
                     @Override
-                    public ObservableSource<ReducerTransformerParams<T>> apply(MiddlewareParams<T> params) throws Exception {
+                    public ObservableSource<MiddlewareResult<T>> apply(MiddlewareParams<T> params) throws Exception {
                         return Observable
                                 .just(params)
                                 .compose(middleware)
-                                .map(ReducerTransformerParams.map(params.state))
+                                .map(MiddlewareResult.map(params.state))
                                 .doOnError(new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
                                         RxJavaPlugins.onError(new MiddlewareException(throwable));
                                     }
                                 })
-                                .onErrorResumeNext(Observable.<ReducerTransformerParams<T>>empty());
+                                .onErrorResumeNext(Observable.<MiddlewareResult<T>>empty());
                     }
                 });
     }

@@ -28,6 +28,7 @@ import io.lamart.xtream.middleware.Middleware;
 import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
+import io.lamart.xtream.util.StubObservableEmitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -80,7 +81,7 @@ public final class StoreObservable<T> extends StoreImp<T> {
 
     private static class ObserverWrapper<T> implements Observer<T> {
 
-        private ObservableEmitter<Object> emitter;
+        private ObservableEmitter<Object> emitter = new StubObservableEmitter<Object>();
 
         @Override
         public void onSubscribe(Disposable d) {

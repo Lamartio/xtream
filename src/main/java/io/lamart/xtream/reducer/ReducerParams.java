@@ -24,6 +24,7 @@
 
 package io.lamart.xtream.reducer;
 
+import io.lamart.xtream.middleware.MiddlewareResult;
 import io.lamart.xtream.store.StoreParams;
 import io.reactivex.functions.Function;
 
@@ -61,10 +62,10 @@ public final class ReducerParams<T> implements StoreParams<T> {
         };
     }
 
-    static <T> Function<ReducerTransformerParams<T>, ReducerParams<T>> map() {
-        return new Function<ReducerTransformerParams<T>, ReducerParams<T>>() {
+    static <T> Function<MiddlewareResult<T>, ReducerParams<T>> map() {
+        return new Function<MiddlewareResult<T>, ReducerParams<T>>() {
             @Override
-            public ReducerParams<T> apply(ReducerTransformerParams<T> params) throws Exception {
+            public ReducerParams<T> apply(MiddlewareResult<T> params) throws Exception {
                 return new ReducerParams<T>(params.call(), params.action);
             }
         };

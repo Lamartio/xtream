@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package io.lamart.xtream.reducer;
+package io.lamart.xtream.middleware;
 
 import io.lamart.xtream.state.State;
 import io.reactivex.functions.Consumer;
@@ -30,21 +30,21 @@ import io.reactivex.functions.Function;
 
 import java.util.concurrent.Callable;
 
-public class ReducerTransformerParams<T> implements Callable<T>, Consumer<T> {
+public class MiddlewareResult<T> implements Callable<T>, Consumer<T> {
 
     private final State<T> state;
     public final Object action;
 
-    private ReducerTransformerParams(State<T> state, Object action) {
+    private MiddlewareResult(State<T> state, Object action) {
         this.state = state;
         this.action = action;
     }
 
-    public static <T> Function<Object, ReducerTransformerParams<T>> map(final State<T> state) {
-        return new Function<Object, ReducerTransformerParams<T>>() {
+    public static <T> Function<Object, MiddlewareResult<T>> map(final State<T> state) {
+        return new Function<Object, MiddlewareResult<T>>() {
             @Override
-            public ReducerTransformerParams<T> apply(Object action) throws Exception {
-                return new ReducerTransformerParams<T>(state, action);
+            public MiddlewareResult<T> apply(Object action) throws Exception {
+                return new MiddlewareResult<T>(state, action);
             }
         };
     }

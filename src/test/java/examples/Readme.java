@@ -47,7 +47,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public final class Readme {
 
-    public void newStore() {
+    private void newStore() {
         AppState state = new AppState();
         Middleware<AppState> middleware = newMiddleware();
         Reducer<AppState> reducer = newReducer();
@@ -66,7 +66,7 @@ public final class Readme {
         store.dispatch("action");
     }
 
-    public void newAdvancedStore() {
+    private void newAdvancedStore() {
         AppState state = new AppState();
         Middleware<AppState> middleware = newMiddleware();
         Reducer<AppState> reducer = newReducer();
@@ -85,7 +85,7 @@ public final class Readme {
         });
     }
 
-    public Middleware<AppState> newMiddleware() {
+    private Middleware<AppState> newMiddleware() {
         return new Middleware<AppState>() {
             @Override
             public ObservableSource<Object> apply(Observable<MiddlewareParams<AppState>> upstream) {
@@ -140,7 +140,7 @@ public final class Readme {
         });
     }
 
-    public ObservableSource<String> download(MiddlewareParams<AppState> params) {
+    private ObservableSource<String> download(MiddlewareParams<AppState> params) {
         return Observable.just("");
     }
 

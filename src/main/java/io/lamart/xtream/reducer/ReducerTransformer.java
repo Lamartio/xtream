@@ -24,13 +24,14 @@
 
 package io.lamart.xtream.reducer;
 
+import io.lamart.xtream.middleware.MiddlewareResult;
 import io.lamart.xtream.state.State;
 import io.reactivex.*;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 
-public final class ReducerTransformer<T> implements ObservableTransformer<ReducerTransformerParams<T>, T> {
+public final class ReducerTransformer<T> implements ObservableTransformer<MiddlewareResult<T>, T> {
 
     private final Reducer<T> reducer;
 
@@ -38,7 +39,7 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
         this.reducer = reducer;
     }
 
-    public static <T> ObservableTransformer<ReducerTransformerParams<T>, T> from(Reducer<T> reducer) {
+    public static <T> ObservableTransformer<MiddlewareResult<T>, T> from(Reducer<T> reducer) {
         return new ReducerTransformer<T>(reducer);
     }
 
@@ -47,35 +48,31 @@ public final class ReducerTransformer<T> implements ObservableTransformer<Reduce
             @Override
             public ObservableSource<T> apply(Observable<Object> observable) {
                 return observable
-                        .map(ReducerTransformerParams.map(state))
+                        .map(MiddlewareResult.map(state))
                         .compose(new ReducerTransformer<T>(reducer));
             }
         };
     }
 
     @Override
-    public ObservableSource<T> apply(Observable<ReducerTransformerParams<T>> observable) {
+    public ObservableSource<T> apply(Observable<MiddlewareResult<T>> observable) {
         return observable
-                .flatMap(new Function<ReducerTransformerParams<T>, ObservableSource<T>>() {
+                .flatMapMaybe(new Function<MiddlewareResult<T>, MaybeSource<? extends T>>() {
                     @Override
-                    public ObservableSource<T> apply(ReducerTransformerParams<T> params) throws Exception {
-                        return Observable
+                    public MaybeSource<? extends T> apply(MiddlewareResult<T> params) throws Exception {
+                        return Single
                                 .just(params)
                                 .map(ReducerParams.<T>map())
-                                .flatMapSingle(new Function<ReducerParams<T>, SingleSource<T>>() {
-                                    @Override
-                                    public SingleSource<T> apply(ReducerParams<T> params) throws Exception {
-                                        return Single.just(params).compose(reducer);
-                                    }
-                                })
-                                .doOnNext(params)
+                                .compose(reducer)
+                                .doOnSuccess(params)
+                                .toMaybe()
                                 .doOnError(new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
                                         RxJavaPlugins.onError(new ReducerException(throwable));
                                     }
                                 })
-                                .onErrorResumeNext(Observable.<T>empty());
+                                .onErrorResumeNext(Maybe.<T>empty());
                     }
                 });
     }
