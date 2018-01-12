@@ -59,7 +59,7 @@ publishing {
 
 bintray {
     user = 'lamartio'
-    key = hasProperty('bintrayKey') ? property('bintrayKey') : ''
+    key = property('bintrayKey')
     publications = ['mavenInfo']
     pkg {
         repo = 'xtream'
