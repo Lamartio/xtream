@@ -30,7 +30,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-version = '0.7.0'
+version = '0.7.1'
 
 repositories {
     jcenter()
@@ -50,16 +50,18 @@ publishing {
     publications {
         mavenInfo(MavenPublication) {
             from components.java
-            groupId 'io.lamartio.xtream'
+            groupId 'io.lamart.xtream'
             artifactId 'xtream'
             version version
         }
     }
 }
 
+def bintrayKey = hasProperty('bintrayKey') ? property('bintrayKey') : ''
+
 bintray {
     user = 'lamartio'
-    key = property('bintrayKey')
+    key = bintrayKey
     publications = ['mavenInfo']
     pkg {
         repo = 'xtream'
