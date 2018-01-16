@@ -23,6 +23,7 @@
  */
 
 import io.lamart.xtream.middleware.*;
+import io.lamart.xtream.middleware.MiddlewareUtil;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
 import io.reactivex.Observable;

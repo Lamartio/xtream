@@ -24,8 +24,43 @@
 
 package io.lamart.xtream.middleware;
 
+import io.reactivex.Emitter;
+import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+
+import java.util.concurrent.Callable;
 
 public interface Middleware<T> extends ObservableTransformer<MiddlewareParams<T>, Object> {
+
+    interface Map<T> extends BiFunction<Callable<T>, Object, Object> {
+        Object apply(Callable<T> getState, Object action) throws Exception;
+    }
+
+    interface EmitComplete<T> extends BiConsumer<MiddlewareParams<T>, Consumer<Object>> {
+        void accept(MiddlewareParams<T> params, Consumer<Object> emitter) throws Exception;
+    }
+
+    interface Emit<T> extends BiConsumer<MiddlewareParams<T>, Emitter<Object>> {
+        void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception;
+    }
+
+    interface FlatMap<T> extends BiFunction<Callable<T>, Object, ObservableSource<Object>> {
+        ObservableSource<Object> apply(Callable<T> getState, Object action) throws Exception;
+    }
+
+    interface FlatMapIterable<T> extends BiFunction<Callable<T>, Object, Iterable<Object>> {
+        Iterable<Object> apply(Callable<T> getState, Object action) throws Exception;
+    }
+
+    interface None<T> extends BiConsumer<Callable<T>, Object> {
+        void accept(Callable<T> getState, Object action) throws Exception;
+    }
+
+    interface Just<T> extends BiConsumer<Callable<T>, Object> {
+        void accept(Callable<T> getState, Object action) throws Exception;
+    }
 
 }
