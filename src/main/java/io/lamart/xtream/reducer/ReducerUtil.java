@@ -42,7 +42,7 @@ public final class ReducerUtil {
         return filter(
                 new Predicate<Object>() {
                     @Override
-                    public boolean test(Object action) throws Exception {
+                    public boolean test(Object action) {
                         return action.getClass().equals(actionType);
                     }
                 },
@@ -66,6 +66,10 @@ public final class ReducerUtil {
         };
     }
 
+    public static <T> Reducer<T> map(final Reducer.Map<T> reducer) {
+        return map((BiFunction<T, Object, T>) reducer);
+    }
+
     public static <T> Reducer<T> map(final BiFunction<T, Object, T> reducer) {
         return new Reducer<T>() {
             @Override
@@ -80,6 +84,9 @@ public final class ReducerUtil {
         };
     }
 
+    public static <T> Reducer<T> just(final Reducer.Just<T> reducer) {
+        return just((BiConsumer<T, Object>) reducer);
+    }
     public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {
         return new Reducer<T>() {
             @Override
@@ -93,7 +100,7 @@ public final class ReducerUtil {
                         })
                         .map(new Function<ReducerParams<T>, T>() {
                             @Override
-                            public T apply(ReducerParams<T> state) throws Exception {
+                            public T apply(ReducerParams<T> state) {
                                 return state.state;
                             }
                         });
@@ -101,28 +108,17 @@ public final class ReducerUtil {
         };
     }
 
-    public static <T> Reducer<T> wrap(SingleTransformer<ReducerParams<T>, T>... reducerArray) {
+    public static <T> Reducer<T> wrap(Reducer<T>... reducerArray) {
         return wrap(Arrays.asList(reducerArray));
     }
 
-    public static <T> Reducer<T> wrap(final Iterable<SingleTransformer<ReducerParams<T>, T>> reducerIterable) {
+    public static <T> Reducer<T> wrap(final Iterable<Reducer<T>> reducerIterable) {
         return Observable
                 .fromIterable(reducerIterable)
-                .reduce(new BiFunction<SingleTransformer<ReducerParams<T>, T>, SingleTransformer<ReducerParams<T>, T>, SingleTransformer<ReducerParams<T>, T>>() {
+                .reduce(new BiFunction<Reducer<T>, Reducer<T>, Reducer<T>>() {
                     @Override
-                    public SingleTransformer<ReducerParams<T>, T> apply(SingleTransformer<ReducerParams<T>, T> previous, SingleTransformer<ReducerParams<T>, T> next) throws Exception {
+                    public Reducer<T> apply(Reducer<T> previous, Reducer<T> next) {
                         return combine(previous, next);
-                    }
-                })
-                .map(new Function<SingleTransformer<ReducerParams<T>, T>, Reducer<T>>() {
-                    @Override
-                    public Reducer<T> apply(final SingleTransformer<ReducerParams<T>, T> reducer) throws Exception {
-                        return new Reducer<T>() {
-                            @Override
-                            public SingleSource<T> apply(Single<ReducerParams<T>> upstream) {
-                                return reducer.apply(upstream);
-                            }
-                        };
                     }
                 })
                 .blockingGet(ReducerUtil.<T>newDefaultInstance());
@@ -134,7 +130,7 @@ public final class ReducerUtil {
             public SingleSource<T> apply(Single<ReducerParams<T>> upstream) {
                 return upstream.flatMap(new Function<ReducerParams<T>, SingleSource<? extends T>>() {
                     @Override
-                    public SingleSource<T> apply(final ReducerParams<T> params) throws Exception {
+                    public SingleSource<T> apply(final ReducerParams<T> params) {
                         return Single
                                 .just(params)
                                 .compose(previous)
@@ -153,7 +149,7 @@ public final class ReducerUtil {
             public SingleSource<T> apply(Single<ReducerParams<T>> upstream) {
                 return upstream.map(new Function<ReducerParams<T>, T>() {
                     @Override
-                    public T apply(ReducerParams<T> params) throws Exception {
+                    public T apply(ReducerParams<T> params) {
                         return params.state;
                     }
                 });

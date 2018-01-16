@@ -48,7 +48,7 @@ compileJava {
 
 publishing {
     publications {
-        mavenInfo(MavenPublication) {
+        xtream(MavenPublication) {
             from components.java
             groupId 'io.lamart.xtream'
             artifactId 'xtream'
@@ -62,7 +62,7 @@ def bintrayKey = hasProperty('bintrayKey') ? property('bintrayKey') : ''
 bintray {
     user = 'lamartio'
     key = bintrayKey
-    publications = ['mavenInfo']
+    publications = ['xtream']
     pkg {
         repo = 'xtream'
         name = 'xtream'

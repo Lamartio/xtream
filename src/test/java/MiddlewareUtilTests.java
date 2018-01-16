@@ -39,16 +39,6 @@ public class MiddlewareUtilTests {
     }
 
     @Test
-    public void maybe() {
-        final ObservableTransformer<MiddlewareParams<Object>, Object> middleware = MiddlewareUtil.maybe((state, action) -> ((Integer) action) % 2 == 0 ? action : null);
-
-        newActionsObservable(1, 2, 3)
-                .compose(middleware)
-                .test()
-                .assertValues(2);
-    }
-
-    @Test
     public void map() {
         final ObservableTransformer<MiddlewareParams<Object>, Object> middleware = MiddlewareUtil.map((state, action) -> action.toString());
 

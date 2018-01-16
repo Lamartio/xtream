@@ -128,7 +128,7 @@ public final class Readme {
 
     // a simpler version of newReducer() that does the same thing
     private Reducer<AppState> newSimpleReducer() {
-        return ReducerUtil.map(new BiFunction<AppState, Object, AppState>() {
+        return ReducerUtil.map(new Reducer.Map<AppState>() {
             @Override
             public AppState apply(AppState state, Object action) throws Exception {
                 if (action instanceof SuccessAction) {
