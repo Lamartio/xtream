@@ -30,7 +30,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-version = '0.7.2'
+version = '0.7.3'
 
 repositories {
     jcenter()
