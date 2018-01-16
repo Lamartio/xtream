@@ -66,10 +66,6 @@ public final class ReducerUtil {
         };
     }
 
-    public static <T> Reducer<T> map(final Reducer.Map<T> reducer) {
-        return map((BiFunction<T, Object, T>) reducer);
-    }
-
     public static <T> Reducer<T> map(final BiFunction<T, Object, T> reducer) {
         return new Reducer<T>() {
             @Override
@@ -84,9 +80,6 @@ public final class ReducerUtil {
         };
     }
 
-    public static <T> Reducer<T> just(final Reducer.Just<T> reducer) {
-        return just((BiConsumer<T, Object>) reducer);
-    }
     public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {
         return new Reducer<T>() {
             @Override

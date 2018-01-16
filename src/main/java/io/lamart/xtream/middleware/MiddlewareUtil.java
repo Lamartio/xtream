@@ -36,10 +36,6 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
-    public static <T> Middleware<T> none(final Middleware.None<T> middleware) {
-        return none((BiConsumer<Callable<T>, Object>) middleware);
-    }
-
     public static <T> Middleware<T> none(final BiConsumer<Callable<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
@@ -61,10 +57,6 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> map(final Middleware.Map<T> middleware) {
-        return map((BiFunction<Callable<T>, Object, Object>) middleware);
-    }
-
     public static <T> Middleware<T> map(final BiFunction<Callable<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
@@ -77,10 +69,6 @@ public final class MiddlewareUtil {
                 });
             }
         };
-    }
-
-    public static <T> Middleware<T> just(final Middleware.Just<T> middleware) {
-        return just((BiConsumer<Callable<T>, Object>) middleware);
     }
 
     public static <T> Middleware<T> just(final BiConsumer<Callable<T>, Object> middleware) {
@@ -105,10 +93,6 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> emitComplete(final Middleware.EmitComplete<T> middleware) {
-        return emitComplete((BiConsumer<MiddlewareParams<T>, Consumer<Object>>) middleware);
-    }
-
     public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Consumer<Object>> middleware) {
         return emit(new BiConsumer<MiddlewareParams<T>, Emitter<Object>>() {
             @Override
@@ -125,10 +109,6 @@ public final class MiddlewareUtil {
                 }
             }
         });
-    }
-
-    public static <T> Middleware<T> emit(final Middleware.Emit<T> middleware) {
-        return emit((BiConsumer<MiddlewareParams<T>, Emitter<Object>>) middleware);
     }
 
     public static <T> Middleware<T> emit(final BiConsumer<MiddlewareParams<T>, Emitter<Object>> middleware) {
@@ -148,10 +128,6 @@ public final class MiddlewareUtil {
                 });
             }
         };
-    }
-
-    public static <T> Middleware<T> flatMap(final Middleware.FlatMap<T> middleware) {
-        return flatMap((BiFunction<Callable<T>, Object, ObservableSource<Object>>) middleware);
     }
 
     public static <T> Middleware<T> flatMap(final BiFunction<Callable<T>, Object, ObservableSource<Object>> middleware) {
