@@ -52,7 +52,7 @@ publishing {
             from components.java
             groupId 'io.lamart.xtream'
             artifactId 'xtream'
-            version versionst
+            version version
         }
     }
 }
@@ -68,7 +68,7 @@ bintray {
         name = 'xtream'
         websiteUrl = 'https://github.com/lamartio/xtream/'
         issueTrackerUrl = 'https://github.com/lamartio/xtream/issues/'
-        vcsUrl = 'https://github.com/Lamartio/xtream.git'
+        vcsUrl = 'https://github.com/lamartio/xtream.git'
         licenses = ['MIT']
         version = version
 

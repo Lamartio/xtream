@@ -144,10 +144,6 @@ public final class MiddlewareUtil {
         };
     }
 
-    public static <T> Middleware<T> flatMapIterable(final Middleware.FlatMapIterable<T> middleware) {
-        return flatMapIterable((BiFunction<Callable<T>, Object, Iterable<Object>>) middleware);
-    }
-
     public static <T> Middleware<T> flatMapIterable(final BiFunction<Callable<T>, Object, Iterable<Object>> middleware) {
         return new Middleware<T>() {
             @Override
