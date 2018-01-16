@@ -47,7 +47,7 @@ public final class MiddlewareUtil {
                 return upstream
                         .flatMapCompletable(new Function<MiddlewareParams<T>, CompletableSource>() {
                             @Override
-                            public CompletableSource apply(final MiddlewareParams<T> params) throws Exception {
+                            public CompletableSource apply(final MiddlewareParams<T> params) {
                                 return Completable.fromAction(new Action() {
                                     @Override
                                     public void run() throws Exception {
@@ -97,7 +97,7 @@ public final class MiddlewareUtil {
                         })
                         .map(new Function<MiddlewareParams<T>, Object>() {
                             @Override
-                            public Object apply(MiddlewareParams<T> params) throws Exception {
+                            public Object apply(MiddlewareParams<T> params) {
                                 return params.action;
                             }
                         });
@@ -116,7 +116,7 @@ public final class MiddlewareUtil {
                 try {
                     middleware.accept(params, new Consumer<Object>() {
                         @Override
-                        public void accept(Object action) throws Exception {
+                        public void accept(Object action) {
                             emitter.onNext(action);
                         }
                     });
@@ -137,7 +137,7 @@ public final class MiddlewareUtil {
             public ObservableSource<Object> apply(final Observable<MiddlewareParams<T>> upstream) {
                 return upstream.flatMap(new Function<MiddlewareParams<T>, ObservableSource<?>>() {
                     @Override
-                    public ObservableSource<?> apply(final MiddlewareParams<T> params) throws Exception {
+                    public ObservableSource<?> apply(final MiddlewareParams<T> params) {
                         return Observable.create(new ObservableOnSubscribe<Object>() {
                             @Override
                             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
@@ -193,32 +193,15 @@ public final class MiddlewareUtil {
     public static <T> Middleware<T> wrap(final Iterable<Middleware<T>> middleware) {
         return Observable
                 .fromIterable(middleware)
-                .map(new Function<Middleware<T>, ObservableTransformer<MiddlewareParams<T>, Object>>() {
+                .reduce(new BiFunction<Middleware<T>, Middleware<T>, Middleware<T>>() {
                     @Override
-                    public ObservableTransformer<MiddlewareParams<T>, Object> apply(Middleware<T> middleware) throws Exception {
-                        return middleware;
-                    }
-                })
-                .reduce(new BiFunction<ObservableTransformer<MiddlewareParams<T>, Object>, ObservableTransformer<MiddlewareParams<T>, Object>, ObservableTransformer<MiddlewareParams<T>, Object>>() {
-                    @Override
-                    public ObservableTransformer<MiddlewareParams<T>, Object> apply(ObservableTransformer<MiddlewareParams<T>, Object> previous, ObservableTransformer<MiddlewareParams<T>, Object> next) throws Exception {
+                    public Middleware<T> apply(Middleware<T> previous, Middleware<T> next) {
                         return combine(previous, next);
-                    }
-                })
-                .map(new Function<ObservableTransformer<MiddlewareParams<T>, Object>, Middleware<T>>() {
-                    @Override
-                    public Middleware<T> apply(final ObservableTransformer<MiddlewareParams<T>, Object> middleware) throws Exception {
-                        return new Middleware<T>() {
-                            @Override
-                            public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> upstream) {
-                                return middleware.apply(upstream);
-                            }
-                        };
                     }
                 })
                 .blockingGet(MiddlewareUtil.<T>newDefaultInstance());
     }
-    
+
     public static <T> Middleware<T> combine(final ObservableTransformer<MiddlewareParams<T>, Object> previous, final ObservableTransformer<MiddlewareParams<T>, Object> next) {
         return new Middleware<T>() {
 
@@ -226,7 +209,7 @@ public final class MiddlewareUtil {
             public ObservableSource<Object> apply(final Observable<MiddlewareParams<T>> upstream) {
                 return upstream.flatMap(new Function<MiddlewareParams<T>, ObservableSource<Object>>() {
                     @Override
-                    public ObservableSource<Object> apply(final MiddlewareParams<T> params) throws Exception {
+                    public ObservableSource<Object> apply(final MiddlewareParams<T> params) {
                         return Observable
                                 .just(params)
                                 .compose(previous)
@@ -244,7 +227,7 @@ public final class MiddlewareUtil {
             public ObservableSource<Object> apply(Observable<MiddlewareParams<T>> observable) {
                 return observable.map(new Function<MiddlewareParams<T>, Object>() {
                     @Override
-                    public Object apply(MiddlewareParams<T> params) throws Exception {
+                    public Object apply(MiddlewareParams<T> params) {
                         return params.action;
                     }
                 });
