@@ -109,22 +109,7 @@ public void newAdvancedStore() {
 Usually when a error is thrown on a stream, the stream gets terminated. That is unwanted behavior, since it will terminate the store. That's why Xtream catches the error and sends it to the `RxJavaPlugin.setErrorHandler`.
 
 ```java
-private void handleErrors() {
-    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
-        @Override
-        public void accept(Throwable throwable) {
-            if (throwable instanceof UndeliverableException) { // thrown by Rx and contains the actual error
-                accept(throwable.getCause());
-            } else if (throwable instanceof StoreException) { // superclass
-                if (throwable instanceof MiddlewareException) {// wraps the error thrown by the middleware
-                    throwable.getCause().printStackTrace();
-                } else if (throwable instanceof ReducerException) {// wraps the error thrown by the reducer
-                    throwable.getCause().printStackTrace();
-                }
-            }
-        }
-    });
-}
+git 
 
 ```
 
