@@ -25,23 +25,24 @@
 package examples;
 
 import io.lamart.xtream.middleware.Middleware;
+import io.lamart.xtream.middleware.MiddlewareException;
 import io.lamart.xtream.middleware.MiddlewareParams;
 import io.lamart.xtream.middleware.MiddlewareTransformer;
-import io.lamart.xtream.reducer.Reducer;
-import io.lamart.xtream.reducer.ReducerParams;
-import io.lamart.xtream.reducer.ReducerTransformer;
-import io.lamart.xtream.reducer.ReducerUtil;
+import io.lamart.xtream.reducer.*;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.store.Store;
+import io.lamart.xtream.store.StoreException;
 import io.lamart.xtream.store.StoreInitializer;
 import io.lamart.xtream.store.StoreSubject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
+import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observables.ConnectableObservable;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 public final class Readme {
@@ -134,6 +135,23 @@ public final class Readme {
                     return new AppState(((SuccessAction) action).result);
                 } else {
                     return state;
+                }
+            }
+        });
+    }
+
+    private void handleExceptions() {
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) {
+                if (throwable instanceof UndeliverableException) { // thrown by Rx and contains the actual error
+                    accept(throwable.getCause());
+                } else if (throwable instanceof StoreException) { // superclass
+                    if (throwable instanceof MiddlewareException) {// wraps the error thrown in the middleware
+                        throwable.getCause().printStackTrace();
+                    } else if (throwable instanceof ReducerException) {// wraps the error thrown in the reducer
+                        throwable.getCause().printStackTrace();
+                    }
                 }
             }
         });

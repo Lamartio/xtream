@@ -25,12 +25,11 @@
 package io.lamart.xtream.store;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.functions.Consumer;
 
 import java.util.concurrent.Callable;
 
-public abstract class Store<T> extends Observable<T> implements Callable<T>, Observer<Object>, Consumer<Object> {
+public abstract class Store<T> extends Observable<T> implements Callable<T>, Consumer<Object> {
 
     public T getState() {
         try {
@@ -42,17 +41,12 @@ public abstract class Store<T> extends Observable<T> implements Callable<T>, Obs
 
     public void dispatch(Object action) {
         try {
-            onNext(action);
+            accept(action);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void accept(Object action) throws Exception {
-        onNext(action);
-    }
-
-    @Override
-    public abstract void onNext(Object action);
+    public abstract void accept(Object action) throws Exception;
 
 }

@@ -32,8 +32,7 @@ import io.lamart.xtream.util.StubObservableEmitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 import java.util.concurrent.Callable;
 
@@ -59,51 +58,38 @@ public final class StoreObservable<T> extends StoreImp<T> {
         return from(new VolatileState<T>(initialState), initializer);
     }
 
+    private StoreObservable(Callable<T> getState, Observable<T> observable, Consumer<Object> dispatch) {
+        super(getState, observable, dispatch);
+    }
+
     public static <T> StoreObservable<T> from(State<T> state, final StoreInitializer<T> initializer) {
-        final ObserverWrapper<Object> observer = new ObserverWrapper<Object>();
+        final Dispatcher dispatch = new Dispatcher();
         final Observable<T> observable = apply(
                 initializer,
                 state,
                 Observable.create(new ObservableOnSubscribe<Object>() {
                     @Override
-                    public void subscribe(ObservableEmitter<Object> e) throws Exception {
-                        observer.set(e);
+                    public void subscribe(ObservableEmitter<Object> e) {
+                        dispatch.set(e);
                     }
                 })
         );
 
-        return new StoreObservable<T>(state, observable, observer);
+        return new StoreObservable<T>(state, observable, dispatch);
     }
 
-    private StoreObservable(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
-        super(getState, observable, observer);
-    }
-
-    private static class ObserverWrapper<T> implements Observer<T> {
+    private static class Dispatcher implements Consumer<Object> {
 
         private ObservableEmitter<Object> emitter = new StubObservableEmitter<Object>();
 
         @Override
-        public void onSubscribe(Disposable d) {
+        public void accept(Object action) {
+            emitter.onNext(action);
         }
 
-        @Override
-        public void onNext(T t) {
-            emitter.onNext(t);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            emitter.onError(e);
-        }
-
-        @Override
-        public void onComplete() {
-            emitter.onComplete();
-        }
-
-        void set(ObservableEmitter<Object> emitter) {
+        public void set(ObservableEmitter<Object> emitter) {
             this.emitter = emitter;
         }
     }
+
 }

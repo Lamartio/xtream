@@ -27,7 +27,7 @@ package io.lamart.xtream.store;
 import io.lamart.xtream.state.State;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observables.ConnectableObservable;
 
 import java.util.concurrent.Callable;
@@ -36,12 +36,12 @@ abstract class StoreImp<T> extends Store<T> {
 
     private final Callable<T> getState;
     private final Observable<T> observable;
-    private final Observer<Object> observer;
+    private final Consumer<Object> dispatch;
 
-    StoreImp(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
+    StoreImp(Callable<T> getState, Observable<T> observable, Consumer<Object> dispatch) {
         this.getState = getState;
         this.observable = observable;
-        this.observer = observer;
+        this.dispatch = dispatch;
     }
 
     @Override
@@ -55,23 +55,8 @@ abstract class StoreImp<T> extends Store<T> {
     }
 
     @Override
-    public void onSubscribe(Disposable d) {
-        observer.onSubscribe(d);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        observer.onError(e);
-    }
-
-    @Override
-    public void onComplete() {
-        observer.onComplete();
-    }
-
-    @Override
-    public void onNext(Object action) {
-        observer.onNext(action);
+    public void accept(Object action) throws Exception {
+        dispatch.accept(action);
     }
 
     protected static <T> Observable<T> apply(StoreInitializer<T> initializer, State<T> state, Observable<Object> source) {

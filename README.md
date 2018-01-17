@@ -2,7 +2,7 @@
 Uses the powerful functionality of ReactiveX for creating a Redux store. The store is simply an Observable with the addition that it can receive actions.
 
 ```java
-public void newStore() {
+private void newStore() {
     AppState state = new AppState();
     Middleware<AppState> middleware = newMiddleware();
     Reducer<AppState> reducer = newReducer();
@@ -10,15 +10,15 @@ public void newStore() {
 
     store.subscribe(new Consumer<AppState>() {
         @Override
-        public void accept(AppState appState) throws Exception {
+        public void accept(AppState appState) {
             // for example; update the UI
         }
     });
 
-    store.observer("this");
-    store.observer("is");
-    store.observer("an");
-    store.observer("action");
+    store.dispatch("this");
+    store.dispatch("is");
+    store.dispatch("an");
+    store.dispatch("action");
 }
 ```
 If you want more options, please check the overloads of `StoreSubject.from` or `StoreObservable.from`.
@@ -100,6 +100,28 @@ public void newAdvancedStore() {
                     .startWith(Observable.fromCallable(state))
                     .distinctUntilChanged()
                     .replay(1);
+        }
+    });
+}
+```
+
+## Exception handling
+Usually when a error is thrown on a stream, the stream gets terminated. That is unwanted behavior, since it will terminate the store. That's why Xtream catches the error and sends it to the `RxJavaPlugin.setErrorHandler`.
+
+```java
+private void handleExceptions() {
+    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            if (throwable instanceof UndeliverableException) { // thrown by Rx and contains the actual error
+                accept(throwable.getCause());
+            } else if (throwable instanceof StoreException) { // superclass
+                if (throwable instanceof MiddlewareException) {// wraps the error thrown in the middleware
+                    throwable.getCause().printStackTrace();
+                } else if (throwable instanceof ReducerException) {// wraps the error thrown in the reducer
+                    throwable.getCause().printStackTrace();
+                }
+            }
         }
     });
 }

@@ -29,7 +29,7 @@ import io.lamart.xtream.reducer.Reducer;
 import io.lamart.xtream.state.State;
 import io.lamart.xtream.state.VolatileState;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
@@ -62,14 +62,19 @@ public final class StoreSubject<T> extends StoreImp<T> {
         return from(state, PublishSubject.create(), initializer);
     }
 
-    public static <T> StoreSubject<T> from(State<T> state, Subject<Object> subject, StoreInitializer<T> initializer) {
-        final Observable<T> observable = apply(initializer, state, subject);
-
-        return new StoreSubject<T>(state, observable, subject);
+    private StoreSubject(Callable<T> getState, Observable<T> observable, Consumer<Object> dispatch) {
+        super(getState, observable, dispatch);
     }
 
-    private StoreSubject(Callable<T> getState, Observable<T> observable, Observer<Object> observer) {
-        super(getState, observable, observer);
+    public static <T> StoreSubject<T> from(State<T> state, final Subject<Object> subject, StoreInitializer<T> initializer) {
+        final Observable<T> observable = apply(initializer, state, subject);
+        final Consumer<Object> dispatch = new Consumer<Object>() {
+            @Override
+            public void accept(Object action) {
+                subject.onNext(action);
+            }
+        };
+        return new StoreSubject<T>(state, observable, dispatch);
     }
 
 }
