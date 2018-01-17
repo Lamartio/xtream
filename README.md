@@ -68,9 +68,9 @@ private Reducer<AppState> newReducer() {
 
 // a simpler version of newReducer() that does the same thing
 private Reducer<AppState> newSimpleReducer() {
-    return ReducerUtil.map(new BiFunction<AppState, Object, AppState>() {
+    return ReducerUtil.map(new ReducerUtil.Map<AppState>() {
         @Override
-        public AppState apply(AppState state, Object action) throws Exception {
+        public AppState apply(AppState state, Object action) {
             if (action instanceof SuccessAction) {
                 return new AppState(((SuccessAction) action).result);
             } else {
