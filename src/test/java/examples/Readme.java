@@ -140,7 +140,7 @@ public final class Readme {
         });
     }
 
-    private void handleExceptions() {
+    private void handleErrors() {
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) {
