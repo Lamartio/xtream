@@ -26,17 +26,7 @@ package io.lamart.xtream.reducer;
 
 
 import io.reactivex.SingleTransformer;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.BiFunction;
 
 public interface Reducer<T> extends SingleTransformer<ReducerParams<T>, T> {
-
-    interface Map<T> extends BiFunction<T, Object, T> {
-        T apply(T state, Object action) throws Exception;
-    }
-
-    interface Just<T> extends BiConsumer<T, Object> {
-        void accept(T state, Object action) throws Exception;
-    }
 
 }

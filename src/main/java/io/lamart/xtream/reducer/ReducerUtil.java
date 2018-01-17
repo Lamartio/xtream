@@ -66,6 +66,10 @@ public final class ReducerUtil {
         };
     }
 
+    interface Map<T> extends BiFunction<T, Object, T> {
+        T apply(T state, Object action) throws Exception;
+    }
+
     public static <T> Reducer<T> map(final BiFunction<T, Object, T> reducer) {
         return new Reducer<T>() {
             @Override
@@ -78,6 +82,10 @@ public final class ReducerUtil {
                 });
             }
         };
+    }
+
+    interface Just<T> extends BiConsumer<T, Object> {
+        void accept(T state, Object action) throws Exception;
     }
 
     public static <T> Reducer<T> just(final BiConsumer<T, Object> reducer) {

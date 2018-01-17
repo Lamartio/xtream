@@ -36,6 +36,10 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
+    interface None<T> extends BiConsumer<Callable<T>, Object> {
+        void accept(Callable<T> getState, Object action) throws Exception;
+    }
+
     public static <T> Middleware<T> none(final BiConsumer<Callable<T>, Object> middleware) {
         return new Middleware<T>() {
             @Override
@@ -57,6 +61,10 @@ public final class MiddlewareUtil {
         };
     }
 
+    interface Map<T> extends BiFunction<Callable<T>, Object, Object> {
+        Object apply(Callable<T> getState, Object action) throws Exception;
+    }
+
     public static <T> Middleware<T> map(final BiFunction<Callable<T>, Object, Object> middleware) {
         return new Middleware<T>() {
             @Override
@@ -69,6 +77,10 @@ public final class MiddlewareUtil {
                 });
             }
         };
+    }
+
+    interface Just<T> extends BiConsumer<Callable<T>, Object> {
+        void accept(Callable<T> getState, Object action) throws Exception;
     }
 
     public static <T> Middleware<T> just(final BiConsumer<Callable<T>, Object> middleware) {
@@ -93,6 +105,10 @@ public final class MiddlewareUtil {
         };
     }
 
+    interface EmitComplete<T> extends BiConsumer<MiddlewareParams<T>, Consumer<Object>> {
+        void accept(MiddlewareParams<T> params, Consumer<Object> emitter) throws Exception;
+    }
+
     public static <T> Middleware<T> emitComplete(final BiConsumer<MiddlewareParams<T>, Consumer<Object>> middleware) {
         return emit(new BiConsumer<MiddlewareParams<T>, Emitter<Object>>() {
             @Override
@@ -109,6 +125,10 @@ public final class MiddlewareUtil {
                 }
             }
         });
+    }
+
+    interface Emit<T> extends BiConsumer<MiddlewareParams<T>, Emitter<Object>> {
+        void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception;
     }
 
     public static <T> Middleware<T> emit(final BiConsumer<MiddlewareParams<T>, Emitter<Object>> middleware) {
@@ -130,6 +150,10 @@ public final class MiddlewareUtil {
         };
     }
 
+    interface FlatMap<T> extends BiFunction<Callable<T>, Object, ObservableSource<Object>> {
+        ObservableSource<Object> apply(Callable<T> getState, Object action) throws Exception;
+    }
+
     public static <T> Middleware<T> flatMap(final BiFunction<Callable<T>, Object, ObservableSource<Object>> middleware) {
         return new Middleware<T>() {
             @Override
@@ -142,6 +166,10 @@ public final class MiddlewareUtil {
                 });
             }
         };
+    }
+
+    interface FlatMapIterable<T> extends BiFunction<Callable<T>, Object, Iterable<Object>> {
+        Iterable<Object> apply(Callable<T> getState, Object action) throws Exception;
     }
 
     public static <T> Middleware<T> flatMapIterable(final BiFunction<Callable<T>, Object, Iterable<Object>> middleware) {
