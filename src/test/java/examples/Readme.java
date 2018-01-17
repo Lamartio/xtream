@@ -39,7 +39,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observables.ConnectableObservable;
@@ -55,7 +54,7 @@ public final class Readme {
 
         store.subscribe(new Consumer<AppState>() {
             @Override
-            public void accept(AppState appState) throws Exception {
+            public void accept(AppState appState) {
                 // for example; update the UI
             }
         });
@@ -72,7 +71,7 @@ public final class Readme {
         Reducer<AppState> reducer = newReducer();
         Store<AppState> store = StoreSubject.from(state, new StoreInitializer<AppState>() {
             @Override
-            public ConnectableObservable<AppState> apply(Observable<Object> observable, State<AppState> state) throws Exception {
+            public ConnectableObservable<AppState> apply(Observable<Object> observable, State<AppState> state) {
                 return observable
                         .observeOn(Schedulers.computation())
                         .compose(MiddlewareTransformer.from(state, middleware))
@@ -101,7 +100,7 @@ public final class Readme {
     private Function<Throwable, ObservableSource<?>> newErrorAction() {
         return new Function<Throwable, ObservableSource<?>>() {
             @Override
-            public ObservableSource<?> apply(Throwable throwable) throws Exception {
+            public ObservableSource<?> apply(Throwable throwable) {
                 return Observable.just(new ErrorAction(throwable));
             }
         };
@@ -113,7 +112,7 @@ public final class Readme {
             public SingleSource<AppState> apply(Single<ReducerParams<AppState>> upstream) {
                 return upstream.flatMap(new Function<ReducerParams<AppState>, SingleSource<AppState>>() {
                     @Override
-                    public SingleSource<AppState> apply(ReducerParams<AppState> params) throws Exception {
+                    public SingleSource<AppState> apply(ReducerParams<AppState> params) {
                         return Single
                                 .just(params)
                                 .filter(it -> it.action instanceof SuccessAction)
@@ -128,9 +127,9 @@ public final class Readme {
 
     // a simpler version of newReducer() that does the same thing
     private Reducer<AppState> newSimpleReducer() {
-        return ReducerUtil.map(new Reducer.Map<AppState>() {
+        return ReducerUtil.map(new ReducerUtil.Map<AppState>() {
             @Override
-            public AppState apply(AppState state, Object action) throws Exception {
+            public AppState apply(AppState state, Object action) {
                 if (action instanceof SuccessAction) {
                     return new AppState(((SuccessAction) action).result);
                 } else {

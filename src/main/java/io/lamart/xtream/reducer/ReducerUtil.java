@@ -66,7 +66,7 @@ public final class ReducerUtil {
         };
     }
 
-    interface Map<T> extends BiFunction<T, Object, T> {
+    public interface Map<T> extends BiFunction<T, Object, T> {
         T apply(T state, Object action) throws Exception;
     }
 
@@ -84,7 +84,7 @@ public final class ReducerUtil {
         };
     }
 
-    interface Just<T> extends BiConsumer<T, Object> {
+    public interface Just<T> extends BiConsumer<T, Object> {
         void accept(T state, Object action) throws Exception;
     }
 

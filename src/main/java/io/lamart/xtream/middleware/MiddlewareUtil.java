@@ -36,7 +36,7 @@ public final class MiddlewareUtil {
         throw new Error();
     }
 
-    interface None<T> extends BiConsumer<Callable<T>, Object> {
+    public interface None<T> extends BiConsumer<Callable<T>, Object> {
         void accept(Callable<T> getState, Object action) throws Exception;
     }
 
@@ -61,7 +61,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    interface Map<T> extends BiFunction<Callable<T>, Object, Object> {
+    public interface Map<T> extends BiFunction<Callable<T>, Object, Object> {
         Object apply(Callable<T> getState, Object action) throws Exception;
     }
 
@@ -79,7 +79,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    interface Just<T> extends BiConsumer<Callable<T>, Object> {
+    public interface Just<T> extends BiConsumer<Callable<T>, Object> {
         void accept(Callable<T> getState, Object action) throws Exception;
     }
 
@@ -105,7 +105,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    interface EmitComplete<T> extends BiConsumer<MiddlewareParams<T>, Consumer<Object>> {
+    public interface EmitComplete<T> extends BiConsumer<MiddlewareParams<T>, Consumer<Object>> {
         void accept(MiddlewareParams<T> params, Consumer<Object> emitter) throws Exception;
     }
 
@@ -127,7 +127,7 @@ public final class MiddlewareUtil {
         });
     }
 
-    interface Emit<T> extends BiConsumer<MiddlewareParams<T>, Emitter<Object>> {
+    public interface Emit<T> extends BiConsumer<MiddlewareParams<T>, Emitter<Object>> {
         void accept(MiddlewareParams<T> params, Emitter<Object> emitter) throws Exception;
     }
 
@@ -150,7 +150,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    interface FlatMap<T> extends BiFunction<Callable<T>, Object, ObservableSource<Object>> {
+    public interface FlatMap<T> extends BiFunction<Callable<T>, Object, ObservableSource<Object>> {
         ObservableSource<Object> apply(Callable<T> getState, Object action) throws Exception;
     }
 
@@ -168,7 +168,7 @@ public final class MiddlewareUtil {
         };
     }
 
-    interface FlatMapIterable<T> extends BiFunction<Callable<T>, Object, Iterable<Object>> {
+    public interface FlatMapIterable<T> extends BiFunction<Callable<T>, Object, Iterable<Object>> {
         Iterable<Object> apply(Callable<T> getState, Object action) throws Exception;
     }
 
