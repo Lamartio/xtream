@@ -147,9 +147,9 @@ public final class Readme {
                 if (throwable instanceof UndeliverableException) { // thrown by Rx and contains the actual error
                     accept(throwable.getCause());
                 } else if (throwable instanceof StoreException) { // superclass
-                    if (throwable instanceof MiddlewareException) {// wraps the error thrown in the middleware
+                    if (throwable instanceof MiddlewareException) {// wraps the error thrown by the middleware
                         throwable.getCause().printStackTrace();
-                    } else if (throwable instanceof ReducerException) {// wraps the error thrown in the reducer
+                    } else if (throwable instanceof ReducerException) {// wraps the error thrown by the reducer
                         throwable.getCause().printStackTrace();
                     }
                 }
