@@ -1,3 +1,5 @@
+# Deprecated
+It was a fun experiment...
 # Xtream
 Uses the powerful functionality of ReactiveX for creating a Redux store. The store is simply an Observable with the addition that it can receive actions.
 
